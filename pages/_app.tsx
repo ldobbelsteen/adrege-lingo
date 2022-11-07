@@ -1,7 +1,10 @@
 import "../styles/globals.css";
+import localFont from "@next/font/local";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { SWRConfig } from "swr";
+
+const myFont = localFont({ src: "../styles/GoBoom.ttf" });
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
@@ -14,7 +17,9 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>Lingo</title>
       </Head>
-      <main className="flex flex-col items-center justify-center overflow-hidden bg-adrege min-h-full text-center text-white p-2">
+      <main
+        className={`${myFont.className} flex flex-col items-center justify-center overflow-hidden bg-adrege min-h-full text-center text-white text-xl p-2`}
+      >
         <Component {...pageProps} />
       </main>
     </SWRConfig>
