@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import localFont from "@next/font/local";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { Toaster } from "react-hot-toast";
 import { SWRConfig } from "swr";
 
 const myFont = localFont({ src: "../styles/GoBoom.ttf" });
@@ -14,6 +15,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           fetch(url, init).then((res) => res.json()),
       }}
     >
+      <Toaster />
       <Head>
         <title>Lingo</title>
       </Head>
