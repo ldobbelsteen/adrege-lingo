@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { SoundEffect } from "../utils/audio";
 
 enum Color {
   CorrectLetter,
@@ -6,37 +7,21 @@ enum Color {
   IncorrectLetter,
 }
 
-type Audios = {
-  correctLetter: HTMLAudioElement;
-  wrongLocation: HTMLAudioElement;
-  incorrectLetter: HTMLAudioElement;
-};
-
-const playAudio = async (audio: HTMLAudioElement) => {
-  return new Promise((resolve, reject) => {
-    audio.onended = resolve;
-    audio.play().catch(reject);
-  });
-};
-
 export default function Grid(props: { word: string; guesses: string[] }) {
   const tries = 5;
-  const [audios, setAudios] = useState<Audios>();
-  const [colorized, setColorized] = useState<Color[][]>([]);
-
-  useEffect(
-    () =>
-      setAudios(() => ({
-        correctLetter: new Audio("/sounds/correct_letter.wav"),
-        wrongLocation: new Audio("/sounds/wrong_location.wav"),
-        incorrectLetter: new Audio("/sounds/incorrect_letter.wav"),
-      })),
+  const [colors, setColors] = useState<Color[][]>([]);
+  const soundEffects = useMemo(
+    () => ({
+      correctLetter: new SoundEffect("/sounds/correct_letter.wav"),
+      wrongLocation: new SoundEffect("/sounds/wrong_location.wav"),
+      incorrectLetter: new SoundEffect("/sounds/incorrect_letter.wav"),
+    }),
     []
   );
 
-  const colorize = useCallback(
-    async (index: number) => {
-      const guess = props.guesses[index];
+  const colorGuess = useCallback(
+    async (guessIndex: number) => {
+      const guess = props.guesses[guessIndex];
       for (let i = 0; i < guess.length; i++) {
         const letter = guess.charAt(i);
         const color =
@@ -45,38 +30,33 @@ export default function Grid(props: { word: string; guesses: string[] }) {
             : props.word.includes(letter)
             ? Color.WrongLocation
             : Color.IncorrectLetter;
-        setColorized((cs) => {
-          const copy = [...cs];
-          copy[index].push(color);
-          return copy;
+        setColors((cs) => {
+          const csCopy = [...cs];
+          csCopy[guessIndex].push(color);
+          return csCopy;
         });
-        if (audios) {
-          switch (color) {
-            case Color.CorrectLetter:
-              await playAudio(audios.correctLetter);
-              break;
-            case Color.WrongLocation:
-              await playAudio(audios.wrongLocation);
-              break;
-            case Color.IncorrectLetter:
-              await playAudio(audios.incorrectLetter);
-          }
+        switch (color) {
+          case Color.CorrectLetter:
+            await soundEffects.correctLetter.play();
+            break;
+          case Color.WrongLocation:
+            await soundEffects.wrongLocation.play();
+            break;
+          case Color.IncorrectLetter:
+            await soundEffects.incorrectLetter.play();
         }
       }
     },
-    [audios, props.guesses, props.word]
+    [soundEffects, props.guesses, props.word]
   );
 
   useEffect(() => {
-    if (
-      props.guesses.length > 1 &&
-      props.guesses.length - 1 > colorized.length
-    ) {
-      const index = colorized.length;
-      setColorized((cs) => [...cs, []]);
-      colorize(index).catch(console.error);
+    if (props.guesses.length > 1 && props.guesses.length - 1 > colors.length) {
+      const index = colors.length;
+      setColors((cs) => [...cs, []]);
+      colorGuess(index).catch(console.error);
     }
-  }, [colorize, colorized, props.guesses, props.word]);
+  }, [colorGuess, colors, props.guesses, props.word]);
 
   return (
     <table>
@@ -85,13 +65,13 @@ export default function Grid(props: { word: string; guesses: string[] }) {
           <tr key={i}>
             {[...Array<number>(props.word.length)].map((_, j) => (
               <td key={j}>
-                <div className="h-24 w-24 rounded m-1 text-adrege text-6xl bg-white">
-                  {colorized[i] !== undefined &&
-                    colorized[i][j] === Color.WrongLocation && (
+                <div className="h-24 w-24 rounded m-1 text-bordeaux text-6xl bg-white">
+                  {colors[i] !== undefined &&
+                    colors[i][j] === Color.WrongLocation && (
                       <div className="h-24 w-24 absolute rounded-full bg-pilsgeel"></div>
                     )}
-                  {colorized[i] !== undefined &&
-                    colorized[i][j] === Color.CorrectLetter && (
+                  {colors[i] !== undefined &&
+                    colors[i][j] === Color.CorrectLetter && (
                       <div className="h-24 w-24 absolute rounded bg-turbulentie"></div>
                     )}
                   <div className="h-24 w-24 absolute flex justify-center items-center">

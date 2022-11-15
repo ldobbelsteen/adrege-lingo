@@ -20,7 +20,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <title>Lingo</title>
       </Head>
       <main
-        className={`${myFont.className} flex flex-col items-center justify-center overflow-hidden bg-adrege min-h-full text-center text-white text-xl p-2`}
+        className={`${myFont.className} flex flex-col items-center justify-center overflow-hidden bg-bordeaux min-h-full text-center text-white text-xl p-2`}
       >
         <Component {...pageProps} />
       </main>

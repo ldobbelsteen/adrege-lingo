@@ -3,7 +3,8 @@ module.exports = {
   theme: {
     colors: {
       adrege: "#ea0e0e",
-      turbulentie: "#ff9900",
+      bordeaux: "#a51918",
+      turbulentie: "#f99225",
       pilsgeel: "#ffd500",
       white: "#ffffff",
     },

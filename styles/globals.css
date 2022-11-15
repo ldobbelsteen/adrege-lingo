@@ -20,6 +20,6 @@
   }
 
   input {
-    @apply text-adrege rounded p-1;
+    @apply text-bordeaux rounded p-1;
   }
 }
