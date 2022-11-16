@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
+import wordJson from "../words.json";
 import Grid from "./Grid";
 
 const allowedLetters = "abcdefghijklmnopqrstuvwxyzY";
-const rawWords =
-  "Adten, Bezat, Zweet, Wonen, Thema, Penis, Laffe, Samen, Corps, Drugs, Drank, Demos, Kroeg, Dwaas, Delft, Draak, Storm, Leden, Faust, Conjo, Penno, Groen, Kloot, Maagd, Naakt, Keizer, Tappen, Zuipen, Huizen, Fundum, Vouwen, Nectar, Borrel, Reizen, Studie, Taphap, Burger, Sjaars, Hertje, Adrege, Vestje, Vagina, Buikpijn, Drinken, Druppel, Praeses, Brassen";
 
 export default function Lingo() {
-  const words = rawWords
-    .replace(/\s/g, "")
-    .split(",")
+  const words = wordJson.words
     .map((w) => w.toLowerCase())
     .map((w) => w.replace(/ij/g, "Y"))
     .map((w) => {
