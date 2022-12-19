@@ -1,20 +1,28 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SoundEffect } from "../utils/audio";
+import { Char } from "./Lingo";
 
 enum Color {
   CorrectLetter,
-  WrongLocation,
-  IncorrectLetter,
+  YellowLetter,
+  WrongLetter,
 }
 
-export default function Grid(props: { word: string; guesses: string[] }) {
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export default function Grid(props: { word: string; guesses: Char[][] }) {
   const tries = 5;
   const [colors, setColors] = useState<Color[][]>([]);
   const soundEffects = useMemo(
     () => ({
-      correctLetter: new SoundEffect("/sounds/correct_letter.wav"),
-      wrongLocation: new SoundEffect("/sounds/wrong_location.wav"),
-      incorrectLetter: new SoundEffect("/sounds/incorrect_letter.wav"),
+      backgroundMusic: new SoundEffect("/sounds/background_music.ogg"),
+      correctAnswer: new SoundEffect("/sounds/correct_answer.ogg"),
+      correctLetter: new SoundEffect("/sounds/correct_letter.ogg"),
+      lingoYellow: new SoundEffect("/sounds/lingo_yellow.ogg"),
+      timeOut: new SoundEffect("/sounds/time_out.ogg"),
+      wrongLetter: new SoundEffect("/sounds/wrong_letter.ogg"),
+      wrongWord: new SoundEffect("/sounds/wrong_word.ogg"),
+      yellowLetter: new SoundEffect("/sounds/yellow_letter.ogg"),
     }),
     []
   );
@@ -23,13 +31,13 @@ export default function Grid(props: { word: string; guesses: string[] }) {
     async (guessIndex: number) => {
       const guess = props.guesses[guessIndex];
       for (let i = 0; i < guess.length; i++) {
-        const letter = guess.charAt(i);
+        const letter = guess[i].char;
         const color =
           letter === props.word.charAt(i)
             ? Color.CorrectLetter
             : props.word.includes(letter)
-            ? Color.WrongLocation
-            : Color.IncorrectLetter;
+            ? Color.YellowLetter
+            : Color.WrongLetter;
         setColors((cs) => {
           const csCopy = [...cs];
           csCopy[guessIndex].push(color);
@@ -39,12 +47,13 @@ export default function Grid(props: { word: string; guesses: string[] }) {
           case Color.CorrectLetter:
             await soundEffects.correctLetter.play();
             break;
-          case Color.WrongLocation:
-            await soundEffects.wrongLocation.play();
+          case Color.YellowLetter:
+            await soundEffects.yellowLetter.play();
             break;
-          case Color.IncorrectLetter:
-            await soundEffects.incorrectLetter.play();
+          case Color.WrongLetter:
+            await soundEffects.wrongLetter.play();
         }
+        await sleep(100);
       }
     },
     [soundEffects, props.guesses, props.word]
@@ -67,7 +76,7 @@ export default function Grid(props: { word: string; guesses: string[] }) {
               <td key={j}>
                 <div className="h-24 w-24 rounded m-1 text-bordeaux text-6xl bg-white">
                   {colors[i] !== undefined &&
-                    colors[i][j] === Color.WrongLocation && (
+                    colors[i][j] === Color.YellowLetter && (
                       <div className="h-24 w-24 absolute rounded-full bg-pilsgeel"></div>
                     )}
                   {colors[i] !== undefined &&
@@ -77,9 +86,9 @@ export default function Grid(props: { word: string; guesses: string[] }) {
                   <div className="h-24 w-24 absolute flex justify-center items-center">
                     {props.guesses[i] === undefined
                       ? ""
-                      : props.guesses[i][j] === "Y"
+                      : props.guesses[i][j].char === "Y"
                       ? "IJ"
-                      : props.guesses[i][j]?.toUpperCase() || "."}
+                      : props.guesses[i][j].char.toUpperCase()}
                   </div>
                 </div>
               </td>
