@@ -4,8 +4,9 @@ import wordJson from "../words.json";
 import Grid from "./Grid";
 
 const tries = 5;
-
+const extraTries = 1;
 const allowedLetters = "abcdefghijklmnopqrstuvwxyzY";
+const audioIntervalMs = 100;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -23,21 +24,25 @@ export enum Color {
 }
 
 export default function Lingo() {
-  const words = wordJson.words
-    .map((w) => w.toLowerCase())
-    .map((w) => w.replace(/ij/g, "Y"))
-    .map((w) => {
-      for (const c of w) {
-        if (!allowedLetters.includes(c)) {
-          throw Error("invalid letter in word: " + w);
-        }
-      }
-      return w;
-    });
+  const words = useMemo(
+    () =>
+      wordJson.words
+        .map((w) => w.toLowerCase())
+        .map((w) => w.replace(/ij/g, "Y"))
+        .map((w) => {
+          for (const c of w) {
+            if (!allowedLetters.includes(c)) {
+              throw Error("invalid letter in word: " + w);
+            }
+          }
+          return w;
+        }),
+    []
+  );
 
-  const [opponentTry, setOpponentTry] = useState(false);
-  const [wordFinished, setWordFinished] = useState(true);
-  const [wordIndex, setWordIndex] = useState(-1);
+  const [extraTry, setExtraTry] = useState(false);
+  const [roundFinished, setRoundFinished] = useState(true);
+  const [word, setWord] = useState("");
   const [guesses, setGuesses] = useState<Letter[][]>();
   const soundEffects = useMemo(
     () => ({
@@ -59,14 +64,16 @@ export default function Lingo() {
         const guess = guesses[guessIndex];
         for (let i = 0; i < guess.length; i++) {
           const char = guess[i].char;
+          const wordOccurrences = word
+            .split("")
+            .filter((c) => c === char).length;
+          const guessCorrectOccurrences = guess.filter(
+            (l, i) => l.char === word.charAt(i) && l.char === char
+          ).length;
           const color =
-            char === words[wordIndex].charAt(i)
+            char === word.charAt(i)
               ? Color.CorrectLetter
-              : guess.filter(
-                  (l, i) =>
-                    l.char === words[wordIndex].charAt(i) && l.char === char
-                ).length <
-                words[wordIndex].split("").filter((c) => c === char).length
+              : guessCorrectOccurrences < wordOccurrences
               ? Color.YellowLetter
               : Color.WrongLetter;
           setGuesses((gs) => {
@@ -85,54 +92,51 @@ export default function Lingo() {
             case Color.WrongLetter:
               await soundEffects.wrongLetter.play();
           }
-          await sleep(100);
+          await sleep(audioIntervalMs);
         }
       }
     },
-    [guesses, soundEffects, words, wordIndex]
+    [guesses, soundEffects, word]
   );
 
   useEffect(() => {
     const listener = (ev: KeyboardEvent) => {
       if (ev.key === "Enter") {
-        if (wordFinished) {
-          const newIndex = wordIndex + 1;
+        if (roundFinished) {
+          const newWordIndex = words.indexOf(word) + 1;
+          const newWord = words[newWordIndex];
           const firstGuess = [
             {
-              char: words[newIndex].charAt(0),
+              char: newWord.charAt(0),
               given: true,
               color: Color.None,
             },
           ];
-          for (let i = 0; i < words[newIndex].length - 1; i++) {
+          for (let i = 0; i < newWord.length - 1; i++) {
             firstGuess.push({
               char: ".",
               given: false,
               color: Color.None,
             });
           }
-          setWordIndex(newIndex);
+          setWord(newWord);
           setGuesses([firstGuess]);
-          setOpponentTry(false);
-          setWordFinished(false);
-        } else if (guesses !== undefined) {
-          if (
-            guesses[guesses.length - 1].every(
-              (c, i) => words[wordIndex].charAt(i) === c.char
-            )
-          ) {
-            void colorGuess(guesses.length - 1);
-            setWordFinished(true);
-          } else if (guesses[guesses.length - 1].every((c) => c.char !== ".")) {
+          setExtraTry(false);
+          setRoundFinished(false);
+        } else if (guesses) {
+          const last = guesses.length - 1;
+          if (guesses[last].every((l, i) => word.charAt(i) === l.char)) {
+            void colorGuess(last);
+            setRoundFinished(true);
+          } else if (guesses[last].every((c) => c.char !== ".")) {
             const newGuess: Letter[] = [];
-            const currentGuess = guesses[guesses.length - 1];
-            for (let i = 0; i < currentGuess.length; i++) {
+            for (let i = 0; i < guesses[last].length; i++) {
               if (
-                currentGuess[i].given ||
-                currentGuess[i].char === words[wordIndex].charAt(i)
+                guesses[last][i].given ||
+                guesses[last][i].char === word.charAt(i)
               ) {
                 newGuess.push({
-                  char: currentGuess[i].char,
+                  char: word.charAt(i),
                   given: true,
                   color: Color.None,
                 });
@@ -144,18 +148,19 @@ export default function Lingo() {
                 });
               }
             }
-            const maxTries = guesses.length >= tries + (opponentTry ? 1 : 0);
-            colorGuess(guesses.length - 1)
+            const maxTries =
+              guesses.length >= tries + (extraTry ? extraTries : 0);
+            colorGuess(last)
               .then(() => {
                 setGuesses((gs) => {
                   if (!gs) return undefined;
                   return [...gs, newGuess];
                 });
                 if (maxTries) {
-                  if (!opponentTry) {
-                    setOpponentTry(true);
+                  if (!extraTry) {
+                    setExtraTry(true);
                   } else {
-                    setWordFinished(true);
+                    setRoundFinished(true);
                   }
                 }
                 return;
@@ -164,16 +169,16 @@ export default function Lingo() {
           }
         }
       } else if (ev.key === "Backspace") {
-        const currentGuess = guesses?.at(-1);
-        if (guesses && currentGuess) {
-          const index = currentGuess
+        if (guesses) {
+          const last = guesses.length - 1;
+          const reverseIndex = guesses[last]
             .slice()
             .reverse()
             .findIndex((c) => c.char !== "." && !c.given);
-          if (index > -1) {
-            const reversedIndex = currentGuess.length - index - 1;
+          if (reverseIndex > -1) {
+            const index = word.length - 1 - reverseIndex;
             const copy = [...guesses];
-            copy[copy.length - 1][reversedIndex] = {
+            copy[last][index] = {
               char: ".",
               given: false,
               color: Color.None,
@@ -182,12 +187,12 @@ export default function Lingo() {
           }
         }
       } else if (allowedLetters.includes(ev.key)) {
-        const currentGuess = guesses?.at(-1);
-        if (guesses && currentGuess) {
-          const index = currentGuess.findIndex((c) => c.char === ".");
+        if (guesses) {
+          const last = guesses.length - 1;
+          const index = guesses[last].findIndex((c) => c.char === ".");
           if (index > -1) {
             const copy = [...guesses];
-            copy[copy.length - 1][index] = {
+            copy[last][index] = {
               char: ev.key,
               given: false,
               color: Color.None,
@@ -200,15 +205,15 @@ export default function Lingo() {
 
     document.addEventListener("keydown", listener);
     return () => document.removeEventListener("keydown", listener);
-  }, [guesses, words, wordIndex, colorGuess, opponentTry, wordFinished]);
+  }, [colorGuess, extraTry, guesses, roundFinished, word, words]);
 
   return (
     <div>
       {guesses && (
         <Grid
-          word={words[wordIndex]}
+          word={word}
           guesses={guesses}
-          tries={opponentTry ? tries + 1 : tries}
+          tries={tries + (extraTry ? extraTries : 0)}
         />
       )}
     </div>
