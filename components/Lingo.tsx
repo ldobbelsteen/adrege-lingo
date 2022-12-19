@@ -211,9 +211,9 @@ export default function Lingo() {
     <div>
       {guesses && (
         <Grid
-          word={word}
+          wordLength={word.length}
           guesses={guesses}
-          tries={tries + (extraTry ? extraTries : 0)}
+          maxTries={tries + (extraTry ? extraTries : 0)}
         />
       )}
     </div>

@@ -1,16 +1,16 @@
 import { Letter, Color } from "./Lingo";
 
 export default function Grid(props: {
-  word: string;
+  wordLength: number;
   guesses: Letter[][];
-  tries: number;
+  maxTries: number;
 }) {
   return (
     <table>
       <tbody>
-        {[...Array<number>(props.tries)].map((_, i) => (
+        {[...Array<number>(props.maxTries)].map((_, i) => (
           <tr key={i}>
-            {[...Array<number>(props.word.length)].map((_, j) => (
+            {[...Array<number>(props.wordLength)].map((_, j) => (
               <td key={j}>
                 <div className="h-24 w-24 rounded m-1 text-bordeaux text-6xl bg-white">
                   {props.guesses[i] &&
