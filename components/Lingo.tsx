@@ -137,6 +137,7 @@ export default function Lingo() {
             colorGuess(last)
               .then(() => {
                 setRoundFinished(true);
+                void soundEffects.correctAnswer.play();
                 return;
               })
               .catch(console.error);
@@ -171,8 +172,10 @@ export default function Lingo() {
                 if (maxTries) {
                   if (!extraTry) {
                     setExtraTry(true);
+                    void soundEffects.wrongWord.play();
                   } else {
                     setRoundFinished(true);
+                    void soundEffects.wrongWord.play();
                   }
                 }
                 return;
@@ -217,7 +220,7 @@ export default function Lingo() {
 
     document.addEventListener("keydown", listener);
     return () => document.removeEventListener("keydown", listener);
-  }, [colorGuess, extraTry, guesses, roundFinished, word, words]);
+  }, [colorGuess, extraTry, guesses, roundFinished, word, words, soundEffects]);
 
   return (
     <div className="bg-bordeaux p-4 rounded-3xl">
