@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SoundEffect } from "../utils/audio";
 import wordJson from "../words.json";
 import Grid from "./Grid";
+import Kaart, { hasLingo, initLingo } from "./Kaart";
 
 const tries = 5;
 const extraTries = 1;
@@ -9,6 +10,14 @@ const allowedLetters = "abcdefghijklmnopqrstuvwxyzY";
 const audioIntervalMs = 100;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const shuffle = (array: string[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
 
 export type Letter = {
   char: string;
@@ -26,17 +35,19 @@ export enum Color {
 export default function Lingo() {
   const words = useMemo(
     () =>
-      wordJson.words
-        .map((w) => w.toLowerCase())
-        .map((w) => w.replace(/ij/g, "Y"))
-        .map((w) => {
-          for (const c of w) {
-            if (!allowedLetters.includes(c)) {
-              throw Error("invalid letter in word: " + w);
+      shuffle(
+        wordJson.words
+          .map((w) => w.toLowerCase())
+          .map((w) => w.replace(/ij/g, "Y"))
+          .map((w) => {
+            for (const c of w) {
+              if (!allowedLetters.includes(c)) {
+                throw Error("invalid letter in word: " + w);
+              }
             }
-          }
-          return w;
-        }),
+            return w;
+          })
+      ),
     []
   );
 
@@ -44,6 +55,7 @@ export default function Lingo() {
   const [roundFinished, setRoundFinished] = useState(true);
   const [word, setWord] = useState("");
   const [guesses, setGuesses] = useState<Letter[][]>();
+  const [guessed, setGuessed] = useState<boolean[]>();
   const soundEffects = useMemo(
     () => ({
       correctAnswer: new SoundEffect("/sounds/correct_answer.ogg"),
@@ -57,6 +69,14 @@ export default function Lingo() {
     []
   );
   const musicRef = useRef<HTMLAudioElement>(null);
+  const [firstLingoOpen, setFirstLingoOpen] = useState(false);
+  const [secondLingoOpen, setSecondLingoOpen] = useState(false);
+  const [firstLingoBalls, setFirstLingoBalls] = useState(() =>
+    initLingo(true, 70, 8)
+  );
+  const [secondLingoBalls, setSecondLingoBalls] = useState(() =>
+    initLingo(false, 70, 8)
+  );
 
   useEffect(() => {
     if (roundFinished) {
@@ -84,6 +104,14 @@ export default function Lingo() {
               : guessCorrectOccurrences < wordOccurrences
               ? Color.YellowLetter
               : Color.WrongLetter;
+          if (char === word.charAt(i)) {
+            setGuessed((gs) => {
+              if (!gs) return gs;
+              const copy = [...gs];
+              copy[i] = true;
+              return copy;
+            });
+          }
           setGuesses((gs) => {
             if (!gs) return undefined;
             const copy = [...gs];
@@ -109,7 +137,35 @@ export default function Lingo() {
 
   useEffect(() => {
     const listener = (ev: KeyboardEvent) => {
-      if (ev.key === "Enter") {
+      if (ev.key === "1") {
+        if (firstLingoOpen) {
+          setFirstLingoOpen(false);
+        } else {
+          setFirstLingoOpen(true);
+        }
+      } else if (ev.key === "2") {
+        if (secondLingoOpen) {
+          setSecondLingoOpen(false);
+        } else {
+          setSecondLingoOpen(true);
+        }
+      } else if (ev.key === "N") {
+        if (firstLingoOpen) {
+          setFirstLingoBalls(initLingo(true, 70, 8));
+        }
+        if (secondLingoOpen) {
+          setSecondLingoBalls(initLingo(false, 70, 8));
+        }
+      } else if (ev.key === "M") {
+        if (firstLingoOpen) {
+          setFirstLingoBalls(initLingo(true, 70, 10));
+        }
+        if (secondLingoOpen) {
+          setSecondLingoBalls(initLingo(false, 70, 10));
+        }
+      } else if (ev.key === "T") {
+        void soundEffects.timeOut.play();
+      } else if (ev.key === "Enter") {
         if (roundFinished) {
           const newWordIndex = words.indexOf(word) + 1;
           const newWord = words[newWordIndex];
@@ -128,10 +184,11 @@ export default function Lingo() {
             });
           }
           setWord(newWord);
+          setGuessed(new Array(newWord.length).fill(false));
           setGuesses([firstGuess]);
           setExtraTry(false);
           setRoundFinished(false);
-        } else if (guesses) {
+        } else if (guesses && guessed) {
           const last = guesses.length - 1;
           if (guesses[last].every((l, i) => word.charAt(i) === l.char)) {
             colorGuess(last)
@@ -146,7 +203,8 @@ export default function Lingo() {
             for (let i = 0; i < guesses[last].length; i++) {
               if (
                 guesses[last][i].given ||
-                guesses[last][i].char === word.charAt(i)
+                guesses[last][i].char === word.charAt(i) ||
+                guessed[i]
               ) {
                 newGuess.push({
                   char: word.charAt(i),
@@ -189,7 +247,7 @@ export default function Lingo() {
           const reverseIndex = guesses[last]
             .slice()
             .reverse()
-            .findIndex((c) => c.char !== "." && !c.given);
+            .findIndex((c) => c.char !== ".");
           if (reverseIndex > -1) {
             const index = word.length - 1 - reverseIndex;
             const copy = [...guesses];
@@ -220,17 +278,56 @@ export default function Lingo() {
 
     document.addEventListener("keydown", listener);
     return () => document.removeEventListener("keydown", listener);
-  }, [colorGuess, extraTry, guesses, roundFinished, word, words, soundEffects]);
+  }, [
+    colorGuess,
+    extraTry,
+    guesses,
+    roundFinished,
+    word,
+    words,
+    soundEffects,
+    firstLingoOpen,
+    secondLingoOpen,
+    guessed,
+  ]);
 
   return (
     <div className="bg-bordeaux p-4 rounded-3xl">
       <audio loop ref={musicRef} src="/sounds/background_music.ogg"></audio>
-      {guesses && (
-        <Grid
-          wordLength={word.length}
-          guesses={guesses}
-          maxTries={tries + (extraTry ? extraTries : 0)}
+      {firstLingoOpen ? (
+        <Kaart
+          balls={firstLingoBalls}
+          setBalls={(balls) => {
+            setFirstLingoBalls(balls);
+            if (hasLingo(balls)) {
+              void soundEffects.correctAnswer.play();
+            } else {
+              void soundEffects.lingoYellow.play();
+            }
+          }}
+          title="Team 1"
         />
+      ) : secondLingoOpen ? (
+        <Kaart
+          balls={secondLingoBalls}
+          setBalls={(balls) => {
+            setSecondLingoBalls(balls);
+            if (hasLingo(balls)) {
+              void soundEffects.correctAnswer.play();
+            } else {
+              void soundEffects.lingoYellow.play();
+            }
+          }}
+          title="Team 2"
+        />
+      ) : (
+        guesses && (
+          <Grid
+            wordLength={word.length}
+            guesses={guesses}
+            maxTries={tries + (extraTry ? extraTries : 0)}
+          />
+        )
       )}
     </div>
   );
