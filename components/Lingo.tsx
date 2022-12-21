@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SoundEffect } from "../utils/audio";
 import wordJson from "../words.json";
 import Grid from "./Grid";
@@ -46,7 +46,6 @@ export default function Lingo() {
   const [guesses, setGuesses] = useState<Letter[][]>();
   const soundEffects = useMemo(
     () => ({
-      backgroundMusic: new SoundEffect("/sounds/background_music.ogg"),
       correctAnswer: new SoundEffect("/sounds/correct_answer.ogg"),
       correctLetter: new SoundEffect("/sounds/correct_letter.ogg"),
       lingoYellow: new SoundEffect("/sounds/lingo_yellow.ogg"),
@@ -57,6 +56,15 @@ export default function Lingo() {
     }),
     []
   );
+  const musicRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (roundFinished) {
+      musicRef.current?.pause();
+    } else {
+      void musicRef.current?.play();
+    }
+  }, [roundFinished]);
 
   const colorGuess = useCallback(
     async (guessIndex: number) => {
@@ -126,8 +134,12 @@ export default function Lingo() {
         } else if (guesses) {
           const last = guesses.length - 1;
           if (guesses[last].every((l, i) => word.charAt(i) === l.char)) {
-            void colorGuess(last);
-            setRoundFinished(true);
+            colorGuess(last)
+              .then(() => {
+                setRoundFinished(true);
+                return;
+              })
+              .catch(console.error);
           } else if (guesses[last].every((c) => c.char !== ".")) {
             const newGuess: Letter[] = [];
             for (let i = 0; i < guesses[last].length; i++) {
@@ -209,6 +221,7 @@ export default function Lingo() {
 
   return (
     <div className="bg-bordeaux p-4 rounded-3xl">
+      <audio loop ref={musicRef} src="/sounds/background_music.ogg"></audio>
       {guesses && (
         <Grid
           wordLength={word.length}
