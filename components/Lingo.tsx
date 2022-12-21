@@ -208,7 +208,7 @@ export default function Lingo() {
   }, [colorGuess, extraTry, guesses, roundFinished, word, words]);
 
   return (
-    <div>
+    <div className="bg-bordeaux p-4 rounded-3xl">
       {guesses && (
         <Grid
           wordLength={word.length}
