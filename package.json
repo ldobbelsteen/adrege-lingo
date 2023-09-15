@@ -1,44 +1,44 @@
 {
   "scripts": {
-    "dev": "next dev",
-    "lint": "next lint",
-    "build": "next build",
-    "start": "next start"
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@next/font": "^13.4.19",
-    "@types/node": "^20.6.1",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
     "autoprefixer": "^10.4.15",
     "eslint": "^8.49.0",
-    "eslint-config-next": "^13.4.19",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "next": "^13.4.19",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.29",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sharp": "^0.32.5",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9"
   },
   "eslintConfig": {
     "extends": [
       "eslint:recommended",
-      "next/core-web-vitals",
-      "plugin:promise/recommended",
+      "plugin:import/recommended",
+      "plugin:import/typescript",
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:promise/recommended",
       "plugin:prettier/recommended"
     ],
     "ignorePatterns": [
-      "next.config.js",
-      "postcss.config.js",
-      "tailwind.config.js"
+      "*.config.js"
     ],
     "parserOptions": {
       "project": [
