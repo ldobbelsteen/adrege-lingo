@@ -29,6 +29,10 @@
   }
 
   input {
-    @apply text-bordeaux rounded p-1;
+    @apply text-bordeaux bg-wit rounded p-1;
+  }
+
+  button[type=button] {
+    @apply text-wit bg-bordeaux rounded p-1;
   }
 }

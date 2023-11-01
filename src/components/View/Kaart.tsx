@@ -83,7 +83,7 @@ export default function Kaart(props: {
           <tr key={i}>
             {[...Array<number>(5)].map((_, j) => (
               <td key={j}>
-                <div className="h-24 w-24 rounded-full m-1 text-bordeaux text-6xl bg-white">
+                <div className="h-24 w-24 rounded-full m-1 text-brandweerrood text-6xl bg-wit">
                   <button
                     onClick={() => {
                       const copy = [...props.balls];

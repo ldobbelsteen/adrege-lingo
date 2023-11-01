@@ -13,14 +13,14 @@ export default function Grid(props: {
           <tr key={i}>
             {[...Array<number>(props.wordLength)].map((_, j) => (
               <td key={j}>
-                <div className="h-24 w-24 rounded m-1 text-bordeaux text-6xl bg-white">
+                <div className="h-24 w-24 rounded m-1 text-brandweerrood text-6xl bg-wit">
                   {props.guesses[i] &&
                     props.guesses[i][j].color === Color.YellowLetter && (
                       <div className="h-24 w-24 absolute rounded-full bg-pilsgeel"></div>
                     )}
                   {props.guesses[i] &&
                     props.guesses[i][j].color === Color.CorrectLetter && (
-                      <div className="h-24 w-24 absolute rounded bg-turbulentie"></div>
+                      <div className="h-24 w-24 absolute rounded bg-schrobbeloranje"></div>
                     )}
                   <div className="h-24 w-24 absolute flex justify-center items-center">
                     {props.guesses[i]

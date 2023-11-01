@@ -7,11 +7,11 @@ module.exports = {
   theme: {
     extend: {},
     colors: {
-      adrege: "#ea0e0e",
       bordeaux: "#a51918",
-      turbulentie: "#f99225",
+      brandweerrood: "#ea0e0e",
+      schrobbeloranje: "#f99225",
       pilsgeel: "#ffd500",
-      white: "#ffffff",
+      wit: "#ffffff",
     },
   },
   plugins: [],

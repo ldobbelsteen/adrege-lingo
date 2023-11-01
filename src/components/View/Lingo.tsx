@@ -5,15 +5,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-import backgroundMusicUrl from "../assets/sounds/background_music.ogg";
-import correctAnswerUrl from "../assets/sounds/correct_answer.ogg";
-import correctLetterUrl from "../assets/sounds/correct_letter.ogg";
-import lingoYellowUrl from "../assets/sounds/lingo_yellow.ogg";
-import timeOutUrl from "../assets/sounds/time_out.ogg";
-import wrongLetterUrl from "../assets/sounds/wrong_letter.ogg";
-import wrongWordUrl from "../assets/sounds/wrong_word.ogg";
-import yellowLetterUrl from "../assets/sounds/yellow_letter.ogg";
-import { SoundEffect } from "../sound";
+import backgroundMusicUrl from "../../assets/sounds/background_music.ogg";
+import correctAnswerUrl from "../../assets/sounds/correct_answer.ogg";
+import correctLetterUrl from "../../assets/sounds/correct_letter.ogg";
+import lingoYellowUrl from "../../assets/sounds/lingo_yellow.ogg";
+import timeOutUrl from "../../assets/sounds/time_out.ogg";
+import wrongLetterUrl from "../../assets/sounds/wrong_letter.ogg";
+import wrongWordUrl from "../../assets/sounds/wrong_word.ogg";
+import yellowLetterUrl from "../../assets/sounds/yellow_letter.ogg";
+import { SoundEffect } from "../../sound";
 import Grid from "./Grid";
 import Kaart, { hasLingo, initLingo } from "./Kaart";
 
@@ -341,7 +341,7 @@ export default function Lingo() {
   ]);
 
   return (
-    <div className="bg-bordeaux p-4 rounded-3xl">
+    <div className="bg-brandweerrood p-4 rounded-3xl">
       <audio loop ref={musicRef} src={backgroundMusicUrl}></audio>
       {firstLingoOpen ? (
         <Kaart
