@@ -7,10 +7,13 @@ module.exports = {
   theme: {
     extend: {},
     colors: {
-      bordeaux: "#a51918",
-      brandweerrood: "#ea0e0e",
-      schrobbeloranje: "#f99225",
-      pilsgeel: "#ffd500",
+      donkerderderderrood: "#520c0b",
+      donkerderderrood: "#690f0e",
+      donkerderrood: "#7d1110",
+      donkerrood: "#a51918",
+      rood: "#ea0e0e",
+      oranje: "#f99225",
+      geel: "#ffd500",
       wit: "#ffffff",
     },
   },

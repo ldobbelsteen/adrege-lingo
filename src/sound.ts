@@ -1,4 +1,13 @@
-export class SoundEffect {
+import backgroundUrl from "./assets/sounds/background.ogg";
+import correctAnswerUrl from "./assets/sounds/correct_answer.ogg";
+import correctLetterUrl from "./assets/sounds/correct_letter.ogg";
+import lingoYellowUrl from "./assets/sounds/lingo_yellow.ogg";
+import timeOutUrl from "./assets/sounds/time_out.ogg";
+import wrongLetterUrl from "./assets/sounds/wrong_letter.ogg";
+import wrongWordUrl from "./assets/sounds/wrong_word.ogg";
+import yellowLetterUrl from "./assets/sounds/yellow_letter.ogg";
+
+class SoundEffect {
   context: AudioContext;
   buffer: AudioBuffer | undefined;
 
@@ -28,3 +37,12 @@ export class SoundEffect {
     });
   }
 }
+
+export const backgroundSound = new SoundEffect(backgroundUrl);
+export const correctAnswerSound = new SoundEffect(correctAnswerUrl);
+export const correctLetterSound = new SoundEffect(correctLetterUrl);
+export const lingoYellowSound = new SoundEffect(lingoYellowUrl);
+export const timeOutSound = new SoundEffect(timeOutUrl);
+export const wrongLetterSound = new SoundEffect(wrongLetterUrl);
+export const wrongWordSound = new SoundEffect(wrongWordUrl);
+export const yellowLetterSound = new SoundEffect(yellowLetterUrl);
