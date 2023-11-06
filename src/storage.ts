@@ -148,3 +148,7 @@ export function useStoredState<T>(
 
   return [state, setStateWrapper];
 }
+
+export function clearStorage() {
+  localStorage.clear();
+}

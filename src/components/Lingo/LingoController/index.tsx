@@ -9,7 +9,7 @@ import { LingoStartController } from "./LingoStartController";
 export const LingoController = () => {
   const [screen, setScreen] = useStoredStateWithDefault("screen", Screen.Start);
 
-  const screenComponent = useMemo((): React.JSX.Element => {
+  const component = useMemo((): React.JSX.Element => {
     switch (screen) {
       case Screen.Start: {
         return <LingoStartController />;
@@ -39,7 +39,7 @@ export const LingoController = () => {
           </Button>
         ))}
       </div>
-      <div>{screenComponent}</div>
+      <div>{component}</div>
     </main>
   );
 };

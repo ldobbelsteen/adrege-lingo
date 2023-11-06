@@ -12,7 +12,7 @@ export const LingoView = () => {
   const [unevenCard] = useStoredState<Ball[][]>("unevenCard");
   const [guesses] = useStoredState<Letter[][]>("guesses");
 
-  const screenComponent = useMemo((): React.JSX.Element => {
+  const component = useMemo((): React.JSX.Element => {
     if (!screen) return <></>;
     switch (screen) {
       case Screen.Start: {
@@ -38,7 +38,7 @@ export const LingoView = () => {
       <main
         className={`flex flex-col items-center overflow-hidden min-h-full text-center text-wit text-xl p-2 bg-[url('../assets/sneeuw.svg')] bg-repeat-x bg-bottom`}
       >
-        {screenComponent}
+        {component}
       </main>
     </div>
   );

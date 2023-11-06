@@ -1,9 +1,6 @@
 import React from "react";
-import { Window } from "../Window";
 import { LingoController } from "./LingoController/index";
 import { LingoView } from "./LingoView/index";
-
-const params = new URLSearchParams(window.location.search);
 
 export enum Screen {
   Start = "Startscherm",
@@ -12,17 +9,8 @@ export enum Screen {
   UnevenCard = "Kaart team 2",
 }
 
+const urlParams = new URLSearchParams(window.location.search);
+
 export function Lingo() {
-  return (
-    <>
-      {params.has("isView") ? (
-        <LingoView />
-      ) : (
-        <>
-          {!params.has("disableView") && <Window url={"/?isView"} />}
-          <LingoController />
-        </>
-      )}
-    </>
-  );
+  return urlParams.has("isView") ? <LingoView /> : <LingoController />;
 }
