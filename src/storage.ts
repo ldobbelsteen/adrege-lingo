@@ -15,6 +15,7 @@ declare global {
 export function useStoredStateWithDefault<T>(
   stateKey: string,
   defaultValue: T,
+  fromJson?: (s: string) => T,
 ): [T, Dispatch<SetStateAction<T>>] {
   const setStoredState = useCallback(
     (value: T) => localStorage.setItem(stateKey, JSON.stringify(value)),
@@ -27,10 +28,10 @@ export function useStoredStateWithDefault<T>(
     }
   }, [stateKey, setStoredState, defaultValue]);
 
-  const getStoredState = useCallback(
-    (): T => JSON.parse(localStorage.getItem(stateKey) as string) as T,
-    [stateKey],
-  );
+  const getStoredState = useCallback((): T => {
+    const value = localStorage.getItem(stateKey) as string;
+    return fromJson ? fromJson(value) : (JSON.parse(value) as T);
+  }, [stateKey, fromJson]);
 
   const [state, setState] = useState(getStoredState);
   useEffect(() => setState(getStoredState()), [getStoredState]);
@@ -82,20 +83,20 @@ export function useStoredStateWithDefault<T>(
 
 export function useStoredState<T>(
   stateKey: string,
+  fromJson?: (s: string) => T,
 ): [T | null, Dispatch<SetStateAction<T | null>>] {
   const getStoredState = useCallback((): T | null => {
-    const stored = localStorage.getItem(stateKey);
-    if (stored === null) return null;
-    return JSON.parse(stored) as T;
-  }, [stateKey]);
+    const value = localStorage.getItem(stateKey);
+    if (value === null) return null;
+    return fromJson ? fromJson(value) : (JSON.parse(value) as T);
+  }, [stateKey, fromJson]);
 
   const setStoredState = useCallback(
     (value: T | null) => {
       if (value === null) {
         localStorage.removeItem(stateKey);
       } else {
-        const stringified = JSON.stringify(value);
-        localStorage.setItem(stateKey, stringified);
+        localStorage.setItem(stateKey, JSON.stringify(value));
       }
     },
     [stateKey],

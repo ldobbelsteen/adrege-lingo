@@ -3,7 +3,7 @@ import { clearStorage } from "../../../storage";
 import { Button } from "../../Button";
 import { WindowToggle } from "../../WindowToggle";
 
-export function LingoStartController() {
+export function LingoSettingsController() {
   return (
     <section>
       <Button

@@ -1,37 +1,45 @@
 import React, { useMemo } from "react";
-import { Ball, Letter } from "../../../lingo";
-import { useStoredState } from "../../../storage";
+import { Card, Guesses } from "../../../lingo";
+import { useStoredState, useStoredStateWithDefault } from "../../../storage";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
 import { LingoGuessView } from "./LingoGuessView";
 import { LingoStartView } from "./LingoStartView";
 
 export const LingoView = () => {
-  const [screen] = useStoredState<Screen>("screen");
-  const [evenCard] = useStoredState<Ball[][]>("evenCard");
-  const [unevenCard] = useStoredState<Ball[][]>("unevenCard");
-  const [guesses] = useStoredState<Letter[][]>("guesses");
+  const [screen] = useStoredStateWithDefault<Screen>("screen", Screen.Settings);
+  const [teamOneCard] = useStoredState<Card>("teamOneCard", Card.fromJson);
+  const [teamTwoCard] = useStoredState<Card>("teamTwoCard", Card.fromJson);
+  const [teamOneGuesses] = useStoredState<Guesses>(
+    "teamOneGuesses",
+    Guesses.fromJson,
+  );
+  const [teamTwoGuesses] = useStoredState<Guesses>(
+    "teamTwoGuesses",
+    Guesses.fromJson,
+  );
 
   const component = useMemo((): React.JSX.Element => {
-    if (!screen) return <></>;
     switch (screen) {
-      case Screen.Start: {
-        return <LingoStartView />;
+      case Screen.GuessTeamOne: {
+        if (!teamOneGuesses) break;
+        return <LingoGuessView guesses={teamOneGuesses} teamOne={true} />;
       }
-      case Screen.Guess: {
-        if (!guesses) return <></>;
-        return <LingoGuessView guesses={guesses} />;
+      case Screen.GuessTeamTwo: {
+        if (!teamTwoGuesses) break;
+        return <LingoGuessView guesses={teamTwoGuesses} teamOne={false} />;
       }
-      case Screen.EvenCard: {
-        if (!evenCard) return <></>;
-        return <LingoCardView card={evenCard} onClick={() => {}} />;
+      case Screen.CardTeamOne: {
+        if (!teamOneCard) break;
+        return <LingoCardView card={teamOneCard} teamOne={true} />;
       }
-      case Screen.UnevenCard: {
-        if (!unevenCard) return <></>;
-        return <LingoCardView card={unevenCard} onClick={() => {}} />;
+      case Screen.CardTeamTwo: {
+        if (!teamTwoCard) break;
+        return <LingoCardView card={teamTwoCard} teamOne={false} />;
       }
     }
-  }, [screen, evenCard, unevenCard, guesses]);
+    return <LingoStartView />;
+  }, [screen, teamOneGuesses, teamTwoGuesses, teamOneCard, teamTwoCard]);
 
   return (
     <div className={`w-full h-full bg-donkerrood`}>

@@ -1,34 +1,45 @@
-import React from "react";
-import { randomCard } from "../../../lingo";
-import { copyNested } from "../../../misc";
+import React, { useCallback } from "react";
+import { Card } from "../../../lingo";
 import { lingoYellowSound } from "../../../sound";
-import { useStoredStateWithDefault } from "../../../storage";
 import { Button } from "../../Button";
 import { LingoCardView } from "../LingoView/LingoCardView";
 
-export function LingoCardController(props: { type: "even" | "uneven" }) {
-  const [card, setCard] = useStoredStateWithDefault(
-    props.type + "Card",
-    randomCard(props.type),
-  );
-
-  const toggleGrabbed = (i: number, j: number) => {
-    if (card) {
-      if (!card[i][j].grabbed) {
-        lingoYellowSound.play().catch(console.error);
+export function LingoCardController(props: {
+  card: Card | null;
+  setCard: (c: Card | null) => void;
+  teamOne: boolean;
+}) {
+  const toggleGrabbed = useCallback(
+    (i: number, j: number) => {
+      if (props.card) {
+        if (!props.card.grabbed[i][j]) {
+          lingoYellowSound.play().catch(console.error);
+        }
+        const clone = props.card.clone();
+        clone.grabbed[i][j] = !props.card.grabbed[i][j];
+        props.setCard(clone);
       }
-      const newCard = copyNested(card);
-      newCard[i][j] = { ...newCard[i][j], grabbed: !newCard[i][j].grabbed };
-      setCard(newCard);
-    }
-  };
+    },
+    [props],
+  );
 
   return (
     <section>
-      <Button onClick={() => setCard(randomCard(props.type))}>
+      <Button
+        onClick={() =>
+          props.setCard(new Card(props.teamOne ? "even" : "uneven"))
+        }
+      >
         Nieuwe kaart
       </Button>
-      {card && <LingoCardView card={card} onClick={toggleGrabbed} />}
+      <Button onClick={() => props.setCard(null)}>Verwijder kaart</Button>
+      {props.card && (
+        <LingoCardView
+          card={props.card}
+          onClick={toggleGrabbed}
+          teamOne={props.teamOne}
+        />
+      )}
     </section>
   );
 }

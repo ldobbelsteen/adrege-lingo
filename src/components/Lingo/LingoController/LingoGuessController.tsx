@@ -1,41 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { Letter, createEmptyGuessGrid } from "../../../lingo";
-import { useStoredState } from "../../../storage";
+import React, { useState } from "react";
+import { Guesses } from "../../../lingo";
 import { Button } from "../../Button";
+import { Input } from "../../Input";
 import { LingoGuessView } from "../LingoView/LingoGuessView";
 
-export function LingoGuessController() {
-  const [word, setWord] = useStoredState<string>("word");
-  const [guesses, setGuesses] = useStoredState<Letter[][]>("guesses");
+export function LingoGuessController(props: {
+  guesses: Guesses | null;
+  setGuesses: (g: Guesses | null) => void;
+  teamOne: boolean;
+}) {
   const [newWord, setNewWord] = useState("");
-
-  useEffect(() => {
-    if (word === null) {
-      setGuesses(null);
-    } else {
-      setGuesses(createEmptyGuessGrid(word, 5));
-    }
-  }, [word, setGuesses]);
+  const { guesses } = props;
 
   return (
     <section>
       {guesses ? (
         <>
-          <Button onClick={() => setWord(null)}>Annuleer woord</Button>
-          <LingoGuessView guesses={guesses} />
-        </>
-      ) : (
-        <>
-          <input
-            type="text"
-            value={newWord}
-            onChange={(ev) => setNewWord(ev.target.value)}
-            className="text-donkerderrood rounded m-1 p-2"
+          <Button onClick={() => props.setGuesses(null)}>
+            Verwijder woord
+          </Button>
+          <Input
+            placeholder="Typ poging..."
+            input={guesses.currentGuessInput.join("")}
+            setInput={(guess) => {
+              const clone = guesses.clone();
+              clone.setCurrentGuessInput(guess);
+              props.setGuesses(clone);
+            }}
           />
           <Button
             onClick={() => {
-              if (newWord.length > 1) {
-                setWord(newWord);
+              const clone = guesses.clone();
+              clone.submitCurrentGuessInput();
+              props.setGuesses(clone);
+            }}
+          >
+            Poging insturen
+          </Button>
+          <LingoGuessView guesses={guesses} teamOne={props.teamOne} />
+        </>
+      ) : (
+        <>
+          <Input
+            placeholder="Typ nieuw woord..."
+            input={newWord}
+            setInput={setNewWord}
+          />
+          <Button
+            onClick={() => {
+              if (newWord.length >= 3) {
+                props.setGuesses(new Guesses(newWord));
+                setNewWord("");
               }
             }}
           >

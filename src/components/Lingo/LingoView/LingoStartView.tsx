@@ -1,5 +1,6 @@
 import React from "react";
+import { Title } from "../../Title";
 
 export function LingoStartView() {
-  return <span className="text-9xl">Adregé Lingo</span>;
+  return <Title text="Adregé Lingo" />;
 }

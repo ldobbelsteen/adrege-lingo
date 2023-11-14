@@ -1,10 +1,9 @@
-export const LingoCardDimensions = 5;
+import { create1DArray, create2DArray, randomPosInt } from "./misc";
 
-export type Letter = {
-  char: string;
-  given: boolean;
-  color: Color;
-};
+export const CardDimensions = 5;
+export const CardMaxValue = 70;
+export const CardPrefilled = 8;
+export const MaxGuesses = 5;
 
 export enum Color {
   CorrectLocation,
@@ -12,87 +11,194 @@ export enum Color {
   None,
 }
 
-export type Ball = {
-  value: number;
-  grabbed: boolean;
-};
+export class Guesses {
+  word: string[]; // array of chars
+  maxGuesses: number;
 
-export function randomInt(max: number) {
-  return Math.floor(Math.random() * max);
+  currentGuess: number;
+  currentGuessInput: string[];
+
+  colors: Color[][];
+  guesses: string[][];
+  discovered: (string | undefined)[];
+
+  constructor(word: string) {
+    this.word = Guesses.wordToChars(word);
+    this.maxGuesses = MaxGuesses;
+
+    this.currentGuess = 0;
+    this.currentGuessInput = [];
+
+    this.colors = create2DArray(this.maxGuesses, this.word.length, Color.None);
+    this.guesses = create2DArray(this.maxGuesses, this.word.length, ".");
+    this.guesses[0][0] = this.word[0];
+    this.discovered = create1DArray(this.word.length, undefined);
+    this.discovered[0] = this.word[0];
+  }
+
+  static fromJson(this: void, json: string) {
+    return Object.assign(new Guesses("$"), JSON.parse(json)) as Guesses;
+  }
+
+  clone() {
+    return Guesses.fromJson(JSON.stringify(this));
+  }
+
+  private static wordToChars(word: string) {
+    const rawChars = word.toUpperCase().split("");
+    const chars = [];
+
+    for (let i = 0; i < rawChars.length; i++) {
+      if (
+        i < rawChars.length - 1 &&
+        rawChars[i] === "I" &&
+        rawChars[i + 1] == "J"
+      ) {
+        chars.push("IJ");
+        i += 1;
+      } else {
+        chars.push(rawChars[i]);
+      }
+    }
+
+    return chars;
+  }
+
+  setCurrentGuessInput(word: string) {
+    this.currentGuessInput = Guesses.wordToChars(word).slice(
+      0,
+      this.word.length,
+    );
+  }
+
+  submitCurrentGuessInput() {
+    if (this.currentGuessInput.length === this.word.length) {
+      this.guesses[this.currentGuess] = this.currentGuessInput;
+      this.addColors(this.currentGuess);
+      this.currentGuess += 1;
+      this.currentGuessInput = [];
+
+      if (this.currentGuess < this.maxGuesses) {
+        this.prefillDiscovered(this.currentGuess);
+      }
+    }
+  }
+
+  private addColors(row: number) {
+    const correctOccs: { [letter: string]: number } = {};
+    for (let i = 0; i < this.word.length; i++) {
+      const letter = this.guesses[row][i];
+      if (letter === this.word[i]) {
+        this.colors[row][i] = Color.CorrectLocation;
+        if (correctOccs[letter]) {
+          correctOccs[letter] += 1;
+        } else {
+          correctOccs[letter] = 1;
+        }
+      }
+    }
+
+    const wordOccs: { [letter: string]: number } = {};
+    for (const letter of this.word) {
+      if (wordOccs[letter]) {
+        wordOccs[letter] += 1;
+      } else {
+        wordOccs[letter] = 1;
+      }
+    }
+
+    for (let i = 0; i < this.word.length; i++) {
+      const letter = this.guesses[row][i];
+      if (
+        this.word.includes(letter) &&
+        correctOccs[letter] < wordOccs[letter] &&
+        this.colors[row][i] === Color.None
+      ) {
+        this.colors[row][i] = Color.IncorrectLocation;
+      }
+    }
+  }
+
+  private getDiscovered() {
+    const result: { letter: string; index: number }[] = [];
+    for (let j = 0; j < this.maxGuesses; j++) {
+      for (let i = 0; i < this.word.length; i++) {
+        if (this.colors[j][i] === Color.CorrectLocation) {
+          result.push({
+            letter: this.guesses[j][i],
+            index: i,
+          });
+        }
+      }
+    }
+    return new Set(result);
+  }
+
+  private prefillDiscovered(row: number) {
+    for (const discovered of this.getDiscovered()) {
+      this.guesses[row][discovered.index] = discovered.letter;
+    }
+  }
 }
 
-export function cardHasLingo(balls: Ball[][]) {
-  for (let i = 0; i < balls.length; i++) {
-    let count = 0;
-    for (let j = 0; j < balls[i].length; j++) {
-      if (balls[i][j].grabbed) count++;
-    }
-    if (count === balls[i].length) {
-      return true;
-    }
-  }
-  for (let j = 0; j < balls[0].length; j++) {
-    let count = 0;
-    for (let i = 0; i < balls.length; i++) {
-      if (balls[i][j].grabbed) count++;
-    }
-    if (count === balls.length) {
-      return true;
-    }
-  }
-  return false;
-}
+export class Card {
+  values: number[][];
+  grabbed: boolean[][];
 
-export function randomCard(type: "even" | "uneven"): Ball[][] {
-  const maximumValue = 70;
-  const prefilledCount = 8;
-  const valueSet = Array.from({ length: maximumValue }, (_, i) => i + 1).filter(
-    (v) => (v % 2 === 0 ? true : false) === (type === "even"),
-  );
-  const result: Ball[][] = [];
-  for (let i = 0; i < LingoCardDimensions; i++) {
-    const row: Ball[] = [];
-    for (let j = 0; j < LingoCardDimensions; j++) {
-      const random = randomInt(valueSet.length);
-      row.push({
-        value: valueSet[random],
-        grabbed: false,
-      });
-      valueSet.splice(random, 1);
+  constructor(type: "even" | "uneven") {
+    const valuePool = [];
+    for (let i = type === "even" ? 2 : 1; i <= CardMaxValue; i += 2) {
+      valuePool.push(i);
     }
-    result.push(row);
-  }
-  for (let i = 0; i < prefilledCount; i++) {
-    let x = randomInt(LingoCardDimensions);
-    let y = randomInt(LingoCardDimensions);
-    while (result[x][y].grabbed) {
-      x = randomInt(LingoCardDimensions);
-      y = randomInt(LingoCardDimensions);
-    }
-    result[x][y] = {
-      value: result[x][y].value,
-      grabbed: true,
-    };
-  }
-  if (cardHasLingo(result)) {
-    return randomCard(type);
-  }
-  return result;
-}
 
-export function createEmptyGuessGrid(word: string, allowedGuesses: number) {
-  const grid: Letter[][] = [];
-  for (let i = 0; i < allowedGuesses; i++) {
-    const row: Letter[] = [];
-    for (let j = 0; j < word.length; j++) {
-      row.push({ char: ".", given: false, color: Color.None });
+    this.values = create2DArray(CardDimensions, CardDimensions, 0);
+    for (let i = 0; i < CardDimensions; i++) {
+      for (let j = 0; j < CardDimensions; j++) {
+        const random = randomPosInt(valuePool.length);
+        this.values[i][j] = valuePool[random];
+        valuePool.splice(random, 1);
+      }
     }
-    grid.push(row);
+
+    this.grabbed = create2DArray(CardDimensions, CardDimensions, false);
+    for (let p = CardPrefilled; p > 0; p--) {
+      const i = randomPosInt(CardDimensions);
+      const j = randomPosInt(CardDimensions);
+      if (this.grabbed[i][j]) {
+        p += 1;
+      } else {
+        this.grabbed[i][j] = true;
+      }
+    }
   }
-  grid[0][0] = {
-    char: word.charAt(0),
-    color: Color.None,
-    given: true,
-  };
-  return grid;
+
+  static fromJson(this: void, json: string) {
+    return Object.assign(new Card("even"), JSON.parse(json)) as Card;
+  }
+
+  clone() {
+    return Card.fromJson(JSON.stringify(this));
+  }
+
+  hasLingo() {
+    for (let i = 0; i < CardDimensions; i++) {
+      let count = 0;
+      for (let j = 0; j < CardDimensions; j++) {
+        if (this.grabbed[i][j]) count++;
+      }
+      if (count === CardDimensions) {
+        return true;
+      }
+    }
+    for (let j = 0; j < CardDimensions; j++) {
+      let count = 0;
+      for (let i = 0; i < CardDimensions; i++) {
+        if (this.grabbed[i][j]) count++;
+      }
+      if (count === CardDimensions) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
