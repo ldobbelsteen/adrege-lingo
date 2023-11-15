@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import backgroundMusicUrl from "../../../assets/sounds/background_music.ogg";
 import { Guesses } from "../../../lingo";
+import { timeOutSound } from "../../../sound";
 import { Button } from "../../Button";
 import { Input } from "../../Input";
+import { Music } from "../../Music";
 import { LingoGuessView } from "../LingoView/LingoGuessView";
 
 export function LingoGuessController(props: {
@@ -10,12 +13,16 @@ export function LingoGuessController(props: {
   teamOne: boolean;
 }) {
   const [newWord, setNewWord] = useState("");
+  const [playMusic, setPlayMusic] = useState(false);
   const { guesses } = props;
+
+  useEffect(() => setPlayMusic(true), [guesses]);
 
   return (
     <section>
       {guesses ? (
         <>
+          <Music playing={playMusic} src={backgroundMusicUrl} />
           <Button onClick={() => props.setGuesses(null)}>
             Verwijder woord
           </Button>
@@ -36,6 +43,13 @@ export function LingoGuessController(props: {
             }}
           >
             Poging insturen
+          </Button>
+          <Button
+            onClick={() => {
+              timeOutSound.play().catch(console.error);
+            }}
+          >
+            Tijd voorbij
           </Button>
           <LingoGuessView guesses={guesses} teamOne={props.teamOne} />
         </>

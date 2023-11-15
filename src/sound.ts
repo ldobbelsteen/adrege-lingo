@@ -1,4 +1,3 @@
-import backgroundUrl from "./assets/sounds/background.ogg";
 import correctAnswerUrl from "./assets/sounds/correct_answer.ogg";
 import correctLetterUrl from "./assets/sounds/correct_letter.ogg";
 import lingoYellowUrl from "./assets/sounds/lingo_yellow.ogg";
@@ -38,7 +37,6 @@ class SoundEffect {
   }
 }
 
-export const backgroundSound = new SoundEffect(backgroundUrl);
 export const correctAnswerSound = new SoundEffect(correctAnswerUrl);
 export const correctLetterSound = new SoundEffect(correctLetterUrl);
 export const lingoYellowSound = new SoundEffect(lingoYellowUrl);
