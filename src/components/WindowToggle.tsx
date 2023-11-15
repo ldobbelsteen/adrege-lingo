@@ -1,11 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Button } from "./Button";
 
-export const WindowToggle = (props: {
-  url: string;
-  openText: string;
-  closeText: string;
-}) => {
+export const WindowToggle = (props: { url: string; windowName: string }) => {
   const [instance, setInstance] = useState<Window>();
 
   const openInstance = useCallback(() => {
@@ -42,9 +38,9 @@ export const WindowToggle = (props: {
         setInstance(undefined);
       }}
     >
-      {props.closeText}
+      {props.windowName} sluiten
     </Button>
   ) : (
-    <Button onClick={openInstance}>{props.openText}</Button>
+    <Button onClick={openInstance}>{props.windowName} openen</Button>
   );
 };

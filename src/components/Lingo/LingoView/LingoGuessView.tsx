@@ -4,8 +4,11 @@ import { Title } from "../../Title";
 
 export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
   return (
-    <div>
-      <Title text={props.teamOne ? "Raden team 1" : "Raden team 2"} />
+    <section>
+      <Title
+        text={props.teamOne ? "Raden team 1" : "Raden team 2"}
+        textSize="text-4xl"
+      />
       <table>
         <tbody>
           {[...Array<number>(props.guesses.maxGuesses)].map((_, i) => (
@@ -31,6 +34,6 @@ export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </section>
   );
 }

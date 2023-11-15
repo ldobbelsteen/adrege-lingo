@@ -8,6 +8,7 @@
       "esnext",
     ],
     "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
     "target": "esnext",
     "types": [

@@ -8,8 +8,11 @@ export function LingoCardView(props: {
   onClick?: (i: number, j: number) => void;
 }) {
   return (
-    <div>
-      <Title text={props.teamOne ? "Kaart team 1" : "Kaart team 2"} />
+    <section>
+      <Title
+        text={props.teamOne ? "Kaart team 1" : "Kaart team 2"}
+        textSize="text-4xl"
+      />
       <table>
         <tbody>
           {[...Array<number>(CardDimensions)].map((_, i) => (
@@ -31,6 +34,6 @@ export function LingoCardView(props: {
           ))}
         </tbody>
       </table>
-    </div>
+    </section>
   );
 }

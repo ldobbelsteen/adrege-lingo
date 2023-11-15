@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import toast from "react-hot-toast";
 import { Card } from "../../../lingo";
 import { lingoYellowSound } from "../../../sound";
 import { Button } from "../../Button";
@@ -13,7 +14,7 @@ export function LingoCardController(props: {
     (i: number, j: number) => {
       if (props.card) {
         if (!props.card.grabbed[i][j]) {
-          lingoYellowSound.play().catch(console.error);
+          lingoYellowSound.play().catch(toast.error);
         }
         const clone = props.card.clone();
         clone.grabbed[i][j] = !props.card.grabbed[i][j];
@@ -24,15 +25,26 @@ export function LingoCardController(props: {
   );
 
   return (
-    <section>
-      <Button
-        onClick={() =>
-          props.setCard(new Card(props.teamOne ? "even" : "uneven"))
-        }
-      >
-        Nieuwe kaart
-      </Button>
-      <Button onClick={() => props.setCard(null)}>Verwijder kaart</Button>
+    <>
+      <div>
+        <Button
+          onClick={() => {
+            props.setCard(new Card(props.teamOne ? "even" : "uneven"));
+            toast.success("Nieuwe kaart aangemaakt!");
+          }}
+        >
+          Nieuwe kaart
+        </Button>
+        <Button
+          onClick={() => {
+            props.setCard(null);
+            toast.error("Kaart verwijderd!");
+          }}
+        >
+          Verwijder kaart
+        </Button>
+      </div>
+
       {props.card && (
         <LingoCardView
           card={props.card}
@@ -40,6 +52,6 @@ export function LingoCardController(props: {
           teamOne={props.teamOne}
         />
       )}
-    </section>
+    </>
   );
 }

@@ -15,6 +15,7 @@ module.exports = {
       oranje: "#f99225",
       geel: "#ffd500",
       wit: "#ffffff",
+      zwart: "#000000",
     },
   },
   plugins: [],

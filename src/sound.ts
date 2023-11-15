@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import correctAnswerUrl from "./assets/sounds/correct_answer.ogg";
 import correctLetterUrl from "./assets/sounds/correct_letter.ogg";
 import lingoYellowUrl from "./assets/sounds/lingo_yellow.ogg";
@@ -19,7 +20,7 @@ class SoundEffect {
         this.buffer = buffer;
         return;
       })
-      .catch(console.error);
+      .catch(toast.error);
   }
 
   async play() {

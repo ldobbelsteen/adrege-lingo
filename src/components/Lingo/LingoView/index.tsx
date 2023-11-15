@@ -42,12 +42,16 @@ export const LingoView = () => {
   }, [screen, teamOneGuesses, teamTwoGuesses, teamOneCard, teamTwoCard]);
 
   return (
-    <div className={`w-full h-full bg-donkerrood`}>
-      <main
-        className={`flex flex-col items-center overflow-hidden min-h-full text-center text-wit text-xl p-2 bg-[url('../assets/sneeuw.svg')] bg-repeat-x bg-bottom`}
+    <main
+      className={`w-full h-full text-center text-wit text-xl bg-donkerrood`}
+    >
+      <div
+        className={`w-full h-full flex justify-center items-center p-2 bg-[url('../assets/sneeuw.svg')] bg-repeat-x bg-bottom`}
       >
-        {component}
-      </main>
-    </div>
+        <div className={`m-2 p-4 bg-donkerderrood rounded-2xl`}>
+          {component}
+        </div>
+      </div>
+    </main>
   );
 };

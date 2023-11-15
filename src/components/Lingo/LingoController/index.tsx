@@ -1,7 +1,9 @@
 import React, { useMemo } from "react";
+import { Toaster } from "react-hot-toast";
 import { Card, Guesses } from "../../../lingo";
 import { useStoredState, useStoredStateWithDefault } from "../../../storage";
 import { Button } from "../../Button";
+import { Title } from "../../Title";
 import { Screen } from "../index";
 import { LingoCardController } from "./LingoCardController";
 import { LingoGuessController } from "./LingoGuessController";
@@ -84,8 +86,16 @@ export const LingoController = () => {
   ]);
 
   return (
-    <main className={`w-full h-full bg-donkerrood text-wit text-xl p-2`}>
-      <div>
+    <main
+      className={`w-full h-full text-center text-wit text-xl bg-donkerrood`}
+    >
+      <Toaster position="top-right" />
+      <div className="flex justify-center items-center bg-donkerderrood p-2">
+        <Title
+          text="Lingo controlepaneel"
+          textSize="text-2xl"
+          className="mx-4"
+        />
         {Object.values(Screen).map((s) => (
           <Button
             key={s}
@@ -96,7 +106,9 @@ export const LingoController = () => {
           </Button>
         ))}
       </div>
-      <div>{component}</div>
+      <div className="flex flex-col justify-center items-center p-2 gap-1">
+        {component}
+      </div>
     </main>
   );
 };
