@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
-import { Card, Guesses } from "../../../lingo";
-import { useStoredState, useStoredStateWithDefault } from "../../../storage";
+import { Card } from "../../../utils/lingo-card";
+import { Guesses } from "../../../utils/lingo-guesses";
+import {
+  useStoredState,
+  useStoredStateWithDefault,
+} from "../../../utils/state-storage";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
 import { LingoGuessView } from "./LingoGuessView";

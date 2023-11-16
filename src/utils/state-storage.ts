@@ -29,9 +29,13 @@ export function useStoredStateWithDefault<T>(
   }, [stateKey, setStoredState, defaultValue]);
 
   const getStoredState = useCallback((): T => {
-    const value = localStorage.getItem(stateKey) as string;
-    return fromJson ? fromJson(value) : (JSON.parse(value) as T);
-  }, [stateKey, fromJson]);
+    const value = localStorage.getItem(stateKey);
+    if (value) {
+      return fromJson ? fromJson(value) : (JSON.parse(value) as T);
+    } else {
+      return defaultValue;
+    }
+  }, [stateKey, fromJson, defaultValue]);
 
   const [state, setState] = useState(getStoredState);
   useEffect(() => setState(getStoredState()), [getStoredState]);

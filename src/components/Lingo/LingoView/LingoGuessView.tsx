@@ -1,5 +1,5 @@
 import React from "react";
-import { Color, Guesses } from "../../../lingo";
+import { Color, Guesses } from "../../../utils/lingo-guesses";
 import { Title } from "../../Title";
 
 export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
@@ -13,19 +13,18 @@ export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
         <tbody>
           {[...Array<number>(props.guesses.maxGuesses)].map((_, i) => (
             <tr key={i}>
-              {[...Array<number>(props.guesses.word.length)].map((_, j) => (
+              {[...Array<number>(props.guesses.wordLength)].map((_, j) => (
                 <td key={j}>
                   <div className="h-24 w-24 rounded m-1 text-donkerrood text-6xl bg-wit">
-                    {props.guesses.colors[i][j] === Color.CorrectLocation && (
+                    {props.guesses.getColor(i, j) === Color.CorrectLocation && (
                       <div className="h-24 w-24 absolute rounded bg-oranje"></div>
                     )}
-                    {props.guesses.colors[i][j] === Color.IncorrectLocation && (
+                    {props.guesses.getColor(i, j) ===
+                      Color.IncorrectLocation && (
                       <div className="h-24 w-24 absolute rounded-full bg-geel"></div>
                     )}
                     <div className="h-24 w-24 absolute flex justify-center items-center">
-                      {(props.guesses.currentGuess === i &&
-                        props.guesses.currentGuessInput[j]) ||
-                        props.guesses.guesses[i][j]}
+                      {props.guesses.getChar(i, j)}
                     </div>
                   </div>
                 </td>

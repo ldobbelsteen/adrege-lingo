@@ -23,8 +23,8 @@ export function Button(props: {
         pressed || props.pressed
           ? "bg-donkerderderderrood"
           : hover
-          ? "bg-donkerderderrood"
-          : "bg-donkerderrood"
+            ? "bg-donkerderderrood"
+            : "bg-donkerderrood"
       }`}
     >
       {props.children}

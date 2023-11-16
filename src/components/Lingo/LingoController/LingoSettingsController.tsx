@@ -1,10 +1,34 @@
 import React from "react";
 import toast from "react-hot-toast";
-import { clearStorage } from "../../../storage";
+import {
+  clearStorage,
+  useStoredStateWithDefault,
+} from "../../../utils/state-storage";
 import { Button } from "../../Button";
+import { NumberInput } from "../../NumberInput";
 import { WindowToggle } from "../../WindowToggle";
 
 export function LingoSettingsController() {
+  const [cardDimensions, setCardDimensions] = useStoredStateWithDefault(
+    "cardDimensions",
+    5,
+  );
+
+  const [cardMaxValue, setCardMaxValue] = useStoredStateWithDefault(
+    "cardMaxValue",
+    70,
+  );
+
+  const [cardPrefilled, setCardPrefilled] = useStoredStateWithDefault(
+    "cardPrefilled",
+    8,
+  );
+
+  const [maxGuesses, setMaxGuesses] = useStoredStateWithDefault(
+    "maxGuesses",
+    5,
+  );
+
   return (
     <>
       <div className="max-w-2xl">
@@ -13,18 +37,49 @@ export function LingoSettingsController() {
         controlepaneel. Als je boven in het menu naar een ander onderdeel
         wisselt, gaat het kijkvenster ook mee (mits er iets te zien valt).
       </div>
-      <WindowToggle url="/?isView" windowName="Kijkvenster" />
-      <Button
-        onClick={() => {
-          clearStorage();
-          toast.success("Spel gereset!");
-          setTimeout(() => {
-            window.location.reload();
-          }, 750);
-        }}
-      >
-        Reset hele spel
-      </Button>
+      <div>
+        <WindowToggle url="/?isView" windowName="Kijkvenster" />
+        <Button
+          onClick={() => {
+            clearStorage();
+            toast.success("Spel gereset!");
+            setTimeout(() => {
+              window.location.reload();
+            }, 750);
+          }}
+        >
+          Reset hele spel
+        </Button>
+      </div>
+      <div>
+        <span>Afmetingen van lingokaarten</span>
+        <NumberInput
+          input={cardDimensions}
+          setInput={setCardDimensions}
+          min={3}
+        />
+      </div>
+      <div>
+        <span>Maximale waarde ballen op lingokaarten</span>
+        <NumberInput
+          input={cardMaxValue}
+          setInput={setCardMaxValue}
+          min={2 * Math.pow(cardDimensions, 2)}
+        />
+      </div>
+      <div>
+        <span>Vooraf gegeven ballen op lingokaarten</span>
+        <NumberInput
+          input={cardPrefilled}
+          setInput={setCardPrefilled}
+          min={0}
+          max={Math.pow(cardDimensions, 2)}
+        />
+      </div>
+      <div>
+        <span>Maximum aantal pogingen woord raden</span>
+        <NumberInput input={maxGuesses} setInput={setMaxGuesses} min={1} />
+      </div>
     </>
   );
 }

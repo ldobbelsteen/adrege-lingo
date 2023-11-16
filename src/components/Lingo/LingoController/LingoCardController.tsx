@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import toast from "react-hot-toast";
-import { Card } from "../../../lingo";
-import { lingoYellowSound } from "../../../sound";
+import { Card } from "../../../utils/lingo-card";
+import { useStoredState } from "../../../utils/state-storage";
 import { Button } from "../../Button";
 import { LingoCardView } from "../LingoView/LingoCardView";
 
@@ -10,14 +10,15 @@ export function LingoCardController(props: {
   setCard: (c: Card | null) => void;
   teamOne: boolean;
 }) {
+  const [cardMaxValue] = useStoredState<number>("cardMaxValue");
+  const [cardDimensions] = useStoredState<number>("cardDimensions");
+  const [cardPrefilled] = useStoredState<number>("cardPrefilled");
+
   const toggleGrabbed = useCallback(
     (i: number, j: number) => {
       if (props.card) {
-        if (!props.card.grabbed[i][j]) {
-          lingoYellowSound.play().catch(toast.error);
-        }
         const clone = props.card.clone();
-        clone.grabbed[i][j] = !props.card.grabbed[i][j];
+        clone.toggleGrabbed(i, j);
         props.setCard(clone);
       }
     },
@@ -29,16 +30,27 @@ export function LingoCardController(props: {
       <div>
         <Button
           onClick={() => {
-            props.setCard(new Card(props.teamOne ? "even" : "uneven"));
-            toast.success("Nieuwe kaart aangemaakt!");
+            if (cardMaxValue && cardDimensions && cardPrefilled) {
+              props.setCard(
+                new Card(
+                  props.teamOne ? "even" : "uneven",
+                  cardMaxValue,
+                  cardDimensions,
+                  cardPrefilled,
+                ),
+              );
+              toast.success("Nieuwe kaart aangemaakt!");
+            }
           }}
         >
           Nieuwe kaart
         </Button>
         <Button
           onClick={() => {
-            props.setCard(null);
-            toast.error("Kaart verwijderd!");
+            if (props.card) {
+              props.setCard(null);
+              toast.error("Kaart verwijderd!");
+            }
           }}
         >
           Verwijder kaart

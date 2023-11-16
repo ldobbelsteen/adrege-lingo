@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
-import { Card, Guesses } from "../../../lingo";
-import { useStoredState, useStoredStateWithDefault } from "../../../storage";
+import { Card } from "../../../utils/lingo-card";
+import { Guesses } from "../../../utils/lingo-guesses";
+import {
+  useStoredState,
+  useStoredStateWithDefault,
+} from "../../../utils/state-storage";
 import { Button } from "../../Button";
 import { Title } from "../../Title";
 import { Screen } from "../index";
