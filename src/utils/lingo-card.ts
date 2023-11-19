@@ -5,6 +5,7 @@ import { guessCorrect, lingoBall } from "./sound-effects";
 export class Card {
   private values: number[][];
   private grabbed: boolean[][];
+  private favorite: boolean[][];
   readonly dimensions: number;
 
   constructor(
@@ -38,6 +39,7 @@ export class Card {
       }
     }
 
+    this.favorite = create2DArray(dimensions, dimensions, false);
     this.dimensions = dimensions;
   }
 
@@ -52,6 +54,7 @@ export class Card {
         lingoBall.play().catch(toast.error);
       }
     }
+    this.updateFavorites();
   }
 
   getValue(i: number, j: number) {
@@ -62,22 +65,49 @@ export class Card {
     return this.grabbed[i][j];
   }
 
+  isFavorite(i: number, j: number) {
+    return this.favorite[i][j];
+  }
+
+  private updateFavorites() {
+    for (let i = 0; i < this.dimensions; i++) {
+      for (let j = 0; j < this.dimensions; j++) {
+        this.favorite[i][j] =
+          !this.grabbed[i][j] &&
+          (this.countGrabbedRow(i) === this.dimensions - 1 ||
+            this.countGrabbedCol(j) === this.dimensions - 1);
+      }
+    }
+  }
+
+  private countGrabbedRow(i: number) {
+    let count = 0;
+    for (let j = 0; j < this.dimensions; j++) {
+      if (this.grabbed[i][j]) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  private countGrabbedCol(j: number) {
+    let count = 0;
+    for (let i = 0; i < this.dimensions; i++) {
+      if (this.grabbed[i][j]) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
   hasLingo() {
     for (let i = 0; i < this.dimensions; i++) {
-      let count = 0;
-      for (let j = 0; j < this.dimensions; j++) {
-        if (this.grabbed[i][j]) count++;
-      }
-      if (count === this.dimensions) {
+      if (this.countGrabbedRow(i) === this.dimensions) {
         return true;
       }
     }
     for (let j = 0; j < this.dimensions; j++) {
-      let count = 0;
-      for (let i = 0; i < this.dimensions; i++) {
-        if (this.grabbed[i][j]) count++;
-      }
-      if (count === this.dimensions) {
+      if (this.countGrabbedCol(j) === this.dimensions) {
         return true;
       }
     }

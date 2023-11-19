@@ -15,7 +15,12 @@ export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
             <tr key={i}>
               {[...Array<number>(props.guesses.wordLength)].map((_, j) => (
                 <td key={j}>
-                  <div className="h-24 w-24 rounded m-1 text-donkerrood text-6xl bg-wit">
+                  <div
+                    style={{
+                      boxShadow: "inset 0px 0px 16px rgba(0,0,0,.4)",
+                    }}
+                    className="h-24 w-24 rounded m-1 text-donkerrood text-6xl bg-wit"
+                  >
                     {props.guesses.getColor(i, j) === Color.CorrectLocation && (
                       <div className="h-24 w-24 absolute rounded bg-oranje"></div>
                     )}

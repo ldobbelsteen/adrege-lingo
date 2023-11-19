@@ -1,6 +1,4 @@
 ## Belangrijk
-- Cijfers van getrokken ballen verbergen
-- Ballen die meteen lingo maken markeren
 - Bij woord raden, alleen puntjes op de huidige rij, niet alle
 - Kleurfout fixen (bij woord 'test', raad: trek, terr en dan tets; dan kloppen de kleuren niet)
 - Onderscheid tussen teams eruit slopen (beurtselectie)\
