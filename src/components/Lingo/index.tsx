@@ -4,10 +4,8 @@ import { LingoView } from "./LingoView/index";
 
 export enum Screen {
   Settings = "Instellingen",
-  GuessTeamOne = "Woord raden team 1",
-  GuessTeamTwo = "Woord raden team 2",
-  CardTeamOne = "Lingokaart team 1",
-  CardTeamTwo = "Lingokaart team 2",
+  Guessing = "Woord raden",
+  Cards = "Lingokaarten",
 }
 
 const urlParams = new URLSearchParams(window.location.search);

@@ -1,67 +1,87 @@
 import React, { useCallback } from "react";
 import toast from "react-hot-toast";
 import { Card } from "../../../utils/lingo-card";
-import { useStoredState } from "../../../utils/state-storage";
+import {
+  useCardDimensions,
+  useCardIndex,
+  useCardMaxValue,
+  useCardPrefilled,
+  useCards,
+  useTeamCount,
+} from "../../../utils/state-storage";
 import { Button } from "../../Button";
+import { Multiselect } from "../../Multiselect";
 import { LingoCardView } from "../LingoView/LingoCardView";
+import { teamIndexToName } from ".";
 
-export function LingoCardController(props: {
-  card: Card | null;
-  setCard: (c: Card | null) => void;
-  teamOne: boolean;
-}) {
-  const [cardMaxValue] = useStoredState<number>("cardMaxValue");
-  const [cardDimensions] = useStoredState<number>("cardDimensions");
-  const [cardPrefilled] = useStoredState<number>("cardPrefilled");
+export function LingoCardController() {
+  const [cardPrefilled] = useCardPrefilled();
+  const [cardMaxValue] = useCardMaxValue();
+  const [cardDimensions] = useCardDimensions();
+  const [teamCount] = useTeamCount();
 
-  const toggleGrabbed = useCallback(
-    (i: number, j: number) => {
-      if (props.card) {
-        const clone = props.card.clone();
-        clone.toggleGrabbed(i, j);
-        props.setCard(clone);
-      }
+  const [cards, setCards] = useCards();
+  const [cardIndex, setCardIndex] = useCardIndex();
+
+  const card = cards[cardIndex];
+  const setCard = useCallback(
+    (newValue: Card | null) => {
+      const next = [...cards];
+      next[cardIndex] = newValue;
+      setCards(next);
     },
-    [props],
+    [cardIndex, cards, setCards],
   );
 
   return (
     <>
+      {teamCount >= 2 && (
+        <div>
+          <Multiselect
+            selected={cardIndex}
+            setSelected={setCardIndex}
+            options={cards.reduce(
+              (acc, _, i) => ({ ...acc, [`Team ${i + 1}`]: i }),
+              {},
+            )}
+          />
+        </div>
+      )}
+
       <div>
-        <Button
-          onClick={() => {
-            if (cardMaxValue && cardDimensions && cardPrefilled) {
-              props.setCard(
+        {card ? (
+          <Button
+            onClick={() => {
+              setCard(null);
+              toast.error("Kaart verwijderd!");
+            }}
+          >
+            Verwijder kaart
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              setCard(
                 new Card(
-                  props.teamOne ? "even" : "uneven",
+                  cardIndex % 2 === 0 ? "even" : "uneven",
                   cardMaxValue,
                   cardDimensions,
                   cardPrefilled,
                 ),
               );
               toast.success("Nieuwe kaart aangemaakt!");
-            }
-          }}
-        >
-          Nieuwe kaart
-        </Button>
-        <Button
-          onClick={() => {
-            if (props.card) {
-              props.setCard(null);
-              toast.error("Kaart verwijderd!");
-            }
-          }}
-        >
-          Verwijder kaart
-        </Button>
+            }}
+          >
+            Nieuwe kaart
+          </Button>
+        )}
       </div>
 
-      {props.card && (
+      {card && (
         <LingoCardView
-          card={props.card}
-          onClick={toggleGrabbed}
-          teamOne={props.teamOne}
+          card={card}
+          team={teamCount >= 2 ? teamIndexToName(cardIndex) : null}
+          setCard={setCard}
         />
       )}
     </>

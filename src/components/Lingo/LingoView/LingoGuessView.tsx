@@ -2,11 +2,14 @@ import React from "react";
 import { Color, Guesses } from "../../../utils/lingo-guesses";
 import { Title } from "../../Title";
 
-export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
+export function LingoGuessView(props: {
+  guesses: Guesses;
+  team: string | null;
+}) {
   return (
     <section>
       <Title
-        text={props.teamOne ? "Raden team 1" : "Raden team 2"}
+        text={props.team ? `Woord raden ${props.team}` : "Woord raden"}
         textSize="text-4xl"
       />
       <table>

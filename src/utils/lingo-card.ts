@@ -69,15 +69,18 @@ export class Card {
     return this.isFavorite[i][j];
   }
 
-  private updateFavorites() {
+  hasLingo() {
     for (let i = 0; i < this.dimensions; i++) {
-      for (let j = 0; j < this.dimensions; j++) {
-        this.isFavorite[i][j] =
-          !this.isGrabbed[i][j] &&
-          (this.countGrabbedRow(i) === this.dimensions - 1 ||
-            this.countGrabbedCol(j) === this.dimensions - 1);
+      if (this.countGrabbedRow(i) === this.dimensions) {
+        return true;
       }
     }
+    for (let j = 0; j < this.dimensions; j++) {
+      if (this.countGrabbedCol(j) === this.dimensions) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private countGrabbedRow(i: number) {
@@ -100,18 +103,15 @@ export class Card {
     return count;
   }
 
-  hasLingo() {
+  private updateFavorites() {
     for (let i = 0; i < this.dimensions; i++) {
-      if (this.countGrabbedRow(i) === this.dimensions) {
-        return true;
+      for (let j = 0; j < this.dimensions; j++) {
+        this.isFavorite[i][j] =
+          !this.isGrabbed[i][j] &&
+          (this.countGrabbedRow(i) === this.dimensions - 1 ||
+            this.countGrabbedCol(j) === this.dimensions - 1);
       }
     }
-    for (let j = 0; j < this.dimensions; j++) {
-      if (this.countGrabbedCol(j) === this.dimensions) {
-        return true;
-      }
-    }
-    return false;
   }
 
   static fromJson(this: void, json: string) {

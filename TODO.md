@@ -1,5 +1,5 @@
 ## Belangrijk
-- Onderscheid tussen teams eruit slopen (beurtselectie)
+- Team aantal instellen op beginscherm
 - Timer bij raden woord
     - Als timer voorbij, niet-bestaand woord, etc., dan beurtwissel met knop
     - Beurtwissel betekent bonusletter (als er minimaal 2 letters nog geraden moeten worden)

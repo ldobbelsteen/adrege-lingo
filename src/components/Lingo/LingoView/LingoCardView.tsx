@@ -4,13 +4,21 @@ import { Title } from "../../Title";
 
 export function LingoCardView(props: {
   card: Card;
-  teamOne: boolean;
-  onClick?: (i: number, j: number) => void;
+  team: string | null;
+  setCard?: (card: Card) => void;
 }) {
+  const onClick = (i: number, j: number) => {
+    if (props.setCard) {
+      const clone = props.card.clone();
+      clone.toggleGrabbed(i, j);
+      props.setCard(clone);
+    }
+  };
+
   return (
     <section>
       <Title
-        text={props.teamOne ? "Kaart team 1" : "Kaart team 2"}
+        text={props.team ? `Lingokaart ${props.team}` : "Lingokaart"}
         textSize="text-4xl"
       />
       <table>
@@ -21,7 +29,7 @@ export function LingoCardView(props: {
                 <td key={j}>
                   <button
                     type="button"
-                    onClick={() => props.onClick && props.onClick(i, j)}
+                    onClick={() => onClick(i, j)}
                     style={{
                       boxShadow: "inset -25px -15px 40px rgba(0,0,0,.3)",
                     }}

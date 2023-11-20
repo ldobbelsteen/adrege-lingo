@@ -7,48 +7,78 @@ import {
   guessOutOfTries,
   guessTimeout,
 } from "../../../utils/sound-effects";
-import { useStoredState } from "../../../utils/state-storage";
+import {
+  useGuesses,
+  useGuessingTeam,
+  useMaxGuesses,
+  useTeamCount,
+} from "../../../utils/state-storage";
 import { Button } from "../../Button";
+import { Multiselect } from "../../Multiselect";
 import { Music } from "../../Music";
 import { TextInputWithSubmitButton } from "../../TextInput";
 import { LingoGuessView } from "../LingoView/LingoGuessView";
+import { teamIndexToName } from ".";
 
-export function LingoGuessController(props: {
-  guesses: Guesses | null;
-  setGuesses: (g: Guesses | null) => void;
-  teamOne: boolean;
-}) {
+export function LingoGuessController() {
   const [newWord, setNewWord] = useState("");
-  const [maxGuesses] = useStoredState<number>("maxGuesses");
+  const [maxGuesses] = useMaxGuesses();
+  const [teamCount] = useTeamCount();
 
-  return props.guesses ? (
-    <LingoGuessInstance
-      guesses={props.guesses}
-      setGuesses={props.setGuesses}
-      teamOne={props.teamOne}
-    />
-  ) : (
-    <TextInputWithSubmitButton
-      autoFocus
-      input={newWord}
-      setInput={setNewWord}
-      placeholder="Typ nieuw woord..."
-      submitButtonText="Start nieuw woord"
-      onSubmit={() => {
-        if (newWord.length >= 3 && maxGuesses) {
-          props.setGuesses(new Guesses(newWord, maxGuesses));
-          setNewWord("");
-          toast.success("Woord gestart!");
-        }
-      }}
-    />
-  );
+  const [guesses, setGuesses] = useGuesses();
+  const [guessingTeam, setGuessingTeam] = useGuessingTeam();
+
+  if (guesses) {
+    return (
+      <LingoGuessInstance
+        guesses={guesses}
+        setGuesses={setGuesses}
+        guessingTeam={guessingTeam}
+        setGuessingTeam={setGuessingTeam}
+      />
+    );
+  } else {
+    return (
+      <>
+        {teamCount >= 2 && (
+          <div>
+            <Multiselect
+              selected={guessingTeam}
+              setSelected={setGuessingTeam}
+              options={[...Array(teamCount).keys()].reduce(
+                (acc, teamIndex) => ({
+                  ...acc,
+                  [teamIndexToName(teamIndex)]: teamIndex,
+                }),
+                {},
+              )}
+            />
+          </div>
+        )}
+        <TextInputWithSubmitButton
+          autoFocus
+          input={newWord}
+          setInput={setNewWord}
+          placeholder="Typ nieuw woord..."
+          submitButtonText="Start nieuw woord"
+          onSubmit={() => {
+            if (newWord.length >= 3) {
+              setGuesses(new Guesses(newWord, maxGuesses));
+              setNewWord("");
+              toast.success("Woord gestart!");
+            }
+          }}
+        />
+      </>
+    );
+  }
 }
 
 function LingoGuessInstance(props: {
   guesses: Guesses;
+  guessingTeam: number;
+  setGuessingTeam: (team: number) => void;
   setGuesses: (g: Guesses | null) => void;
-  teamOne: boolean;
 }) {
   const [isFinished, setFinished] = useState(false);
   const [colorIndex, setColorIndex] = useState({
@@ -141,7 +171,10 @@ function LingoGuessInstance(props: {
         }}
       />
 
-      <LingoGuessView guesses={props.guesses} teamOne={props.teamOne} />
+      <LingoGuessView
+        guesses={props.guesses}
+        team={teamIndexToName(props.guessingTeam)}
+      />
     </>
   );
 }

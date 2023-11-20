@@ -2,32 +2,22 @@ import React from "react";
 import toast from "react-hot-toast";
 import {
   clearStorage,
-  useStoredStateWithDefault,
+  useCardDimensions,
+  useCardMaxValue,
+  useCardPrefilled,
+  useMaxGuesses,
+  useTeamCount,
 } from "../../../utils/state-storage";
 import { Button } from "../../Button";
 import { NumberInput } from "../../NumberInput";
 import { WindowToggle } from "../../WindowToggle";
 
 export function LingoSettingsController() {
-  const [cardDimensions, setCardDimensions] = useStoredStateWithDefault(
-    "cardDimensions",
-    5,
-  );
-
-  const [cardMaxValue, setCardMaxValue] = useStoredStateWithDefault(
-    "cardMaxValue",
-    70,
-  );
-
-  const [cardPrefilled, setCardPrefilled] = useStoredStateWithDefault(
-    "cardPrefilled",
-    8,
-  );
-
-  const [maxGuesses, setMaxGuesses] = useStoredStateWithDefault(
-    "maxGuesses",
-    5,
-  );
+  const [cardDimensions, setCardDimensions] = useCardDimensions();
+  const [cardMaxValue, setCardMaxValue] = useCardMaxValue();
+  const [cardPrefilled, setCardPrefilled] = useCardPrefilled();
+  const [maxGuesses, setMaxGuesses] = useMaxGuesses();
+  const [teamCount, setTeamCount] = useTeamCount();
 
   return (
     <>
@@ -50,6 +40,15 @@ export function LingoSettingsController() {
         >
           Reset hele spel
         </Button>
+      </div>
+      <div>
+        <span>Aantal teams</span>
+        <NumberInput
+          input={teamCount}
+          setInput={setTeamCount}
+          min={1}
+          max={4}
+        />
       </div>
       <div>
         <span>Afmetingen van lingokaarten</span>

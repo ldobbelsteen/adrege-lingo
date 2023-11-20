@@ -1,49 +1,56 @@
 import React, { useMemo } from "react";
-import { Card } from "../../../utils/lingo-card";
-import { Guesses } from "../../../utils/lingo-guesses";
 import {
-  useStoredState,
-  useStoredStateWithDefault,
+  useCardIndex,
+  useCards,
+  useGuesses,
+  useGuessingTeam,
+  useScreen,
+  useTeamCount,
 } from "../../../utils/state-storage";
+import { teamIndexToName } from "../LingoController";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
 import { LingoGuessView } from "./LingoGuessView";
 import { LingoStartView } from "./LingoStartView";
 
 export const LingoView = () => {
-  const [screen] = useStoredStateWithDefault<Screen>("screen", Screen.Settings);
-  const [teamOneCard] = useStoredState<Card>("teamOneCard", Card.fromJson);
-  const [teamTwoCard] = useStoredState<Card>("teamTwoCard", Card.fromJson);
-  const [teamOneGuesses] = useStoredState<Guesses>(
-    "teamOneGuesses",
-    Guesses.fromJson,
-  );
-  const [teamTwoGuesses] = useStoredState<Guesses>(
-    "teamTwoGuesses",
-    Guesses.fromJson,
-  );
+  const [screen] = useScreen();
+  const [teamCount] = useTeamCount();
+
+  const [guesses] = useGuesses();
+  const [guessingTeam] = useGuessingTeam();
+
+  const [cards] = useCards();
+  const [cardIndex] = useCardIndex();
+  const card = cards[cardIndex];
 
   const component = useMemo((): React.JSX.Element => {
     switch (screen) {
-      case Screen.GuessTeamOne: {
-        if (!teamOneGuesses) break;
-        return <LingoGuessView guesses={teamOneGuesses} teamOne={true} />;
+      case Screen.Guessing: {
+        if (guesses) {
+          return (
+            <LingoGuessView
+              guesses={guesses}
+              team={teamCount >= 2 ? teamIndexToName(guessingTeam) : null}
+            />
+          );
+        }
+        break;
       }
-      case Screen.GuessTeamTwo: {
-        if (!teamTwoGuesses) break;
-        return <LingoGuessView guesses={teamTwoGuesses} teamOne={false} />;
-      }
-      case Screen.CardTeamOne: {
-        if (!teamOneCard) break;
-        return <LingoCardView card={teamOneCard} teamOne={true} />;
-      }
-      case Screen.CardTeamTwo: {
-        if (!teamTwoCard) break;
-        return <LingoCardView card={teamTwoCard} teamOne={false} />;
+      case Screen.Cards: {
+        if (card) {
+          return (
+            <LingoCardView
+              card={card}
+              team={teamCount >= 2 ? teamIndexToName(cardIndex) : null}
+            />
+          );
+        }
+        break;
       }
     }
     return <LingoStartView />;
-  }, [screen, teamOneGuesses, teamTwoGuesses, teamOneCard, teamTwoCard]);
+  }, [card, cardIndex, guesses, guessingTeam, screen, teamCount]);
 
   return (
     <main
