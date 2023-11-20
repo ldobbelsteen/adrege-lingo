@@ -18,9 +18,9 @@ export function LingoGuessView(props: {
       />
       <table>
         <tbody>
-          {[...Array<number>(props.guesses.maxGuesses)].map((_, i) => (
+          {[...Array<number>(props.guesses.maxGuesses())].map((_, i) => (
             <tr key={i}>
-              {[...Array<number>(props.guesses.wordLength)].map((_, j) => (
+              {[...Array<number>(props.guesses.wordLength())].map((_, j) => (
                 <td key={j}>
                   <div
                     style={{

@@ -9,6 +9,7 @@ import {
 } from "../../../utils/sound-effects";
 import {
   useFirstTeamGuessing,
+  useGuessingStatus,
   useGuesses,
   useMaxGuesses,
   useTeamMode,
@@ -33,6 +34,7 @@ export function LingoGuessController() {
         guesses={guesses}
         setGuesses={setGuesses}
         firstTeamGuessing={teamMode ? firstTeamGuessing : null}
+        toggleTeamGuessing={() => setFirstTeamGuessing(!firstTeamGuessing)}
       />
     );
   } else {
@@ -74,15 +76,22 @@ function LingoGuessInstance(props: {
   guesses: Guesses;
   setGuesses: (g: Guesses | null) => void;
   firstTeamGuessing: boolean | null;
+  toggleTeamGuessing: () => void;
 }) {
-  const [isFinished, setFinished] = useState(false);
+  const [status, setStatus] = useGuessingStatus();
   const [colorIndex, setColorIndex] = useState({
     row: -1,
-    i: props.guesses.wordLength + 1,
+    i: props.guesses.wordLength() + 1,
   });
 
+  // Set status to running when the word changes (a.k.a. new word)
+  const word = props.guesses.getWord();
+  useEffect(() => {
+    setStatus("running");
+  }, [word, setStatus]);
+
   // Start coloring animation when going to the next row.
-  const { currentRow } = props.guesses;
+  const currentRow = props.guesses.getCurrentRow();
   useEffect(() => {
     if (currentRow > 0) {
       setColorIndex({
@@ -95,61 +104,99 @@ function LingoGuessInstance(props: {
   // Color the cell at the current index after an interval.
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (colorIndex.i < props.guesses.wordLength) {
+      if (colorIndex.i < props.guesses.wordLength()) {
         const clone = props.guesses.clone();
         clone.setColor(colorIndex.row, colorIndex.i);
         props.setGuesses(clone);
-        setColorIndex({ ...colorIndex, i: colorIndex.i + 1 });
-      }
-      if (colorIndex.i === props.guesses.wordLength) {
-        if (props.guesses.isFinished(colorIndex.row)) {
-          setFinished(true);
-          guessCorrect.play().catch(toast.error);
-        } else if (colorIndex.row === props.guesses.maxGuesses - 1) {
-          setFinished(true);
-          guessOutOfTries.play().catch(toast.error);
-        } else {
+      } else if (colorIndex.i === props.guesses.wordLength()) {
+        if (props.guesses.isCorrect()) {
+          if (status === "running") {
+            guessCorrect.play().catch(toast.error);
+            setStatus("finished");
+          }
+        } else if (props.guesses.outOfTries()) {
+          if (status === "running") {
+            guessOutOfTries.play().catch(toast.error);
+            setStatus("paused");
+          }
+        } else if (status === "running") {
           const clone = props.guesses.clone();
-          clone.fillDiscovered();
+          clone.prefillDiscovered();
           props.setGuesses(clone);
         }
-        setColorIndex({
-          row: colorIndex.row,
-          i: colorIndex.i + 1,
-        });
       }
+      setColorIndex({ ...colorIndex, i: colorIndex.i + 1 });
     }, 200);
     return () => clearTimeout(timeout);
-  }, [colorIndex, props]);
+  }, [colorIndex, props, setStatus, status]);
 
   return (
     <>
-      <Music playing={!isFinished} src={guessingMusicUrl} />
+      <Music playing={status === "running"} src={guessingMusicUrl} />
 
       <div>
         <Button
           onClick={() => {
             props.setGuesses(null);
-            toast.error("Gestopt met woord!");
+            toast.error("Woord verwijderd!");
           }}
         >
-          Stop met woord
+          Verwijder woord
         </Button>
-        <Button
-          onClick={() => {
-            guessTimeout.play().catch(toast.error);
-            toast.error("Tijd voorbij!");
-          }}
-        >
-          Tijd voorbij
-        </Button>
+
+        {status === "running" && (
+          <Button
+            onClick={() => {
+              setStatus("paused");
+              guessTimeout.play().catch(toast.error);
+              toast.error("Tijd voorbij!");
+            }}
+          >
+            Tijd voorbij / fout woord
+          </Button>
+        )}
+
+        {status === "paused" && (
+          <>
+            <Button
+              onClick={() => {
+                const clone = props.guesses.clone();
+                if (clone.outOfTries()) {
+                  clone.addRow();
+                }
+                clone.prefillDiscovered();
+                props.setGuesses(clone);
+                setStatus("running");
+              }}
+            >
+              Extra kans
+            </Button>
+            <Button
+              onClick={() => {
+                props.toggleTeamGuessing();
+                const clone = props.guesses.clone();
+                if (clone.outOfTries()) {
+                  clone.addRow();
+                }
+                if (clone.remainingUndiscovered() >= 2) {
+                  clone.addBonusLetter();
+                }
+                clone.prefillDiscovered();
+                props.setGuesses(clone);
+                setStatus("running");
+              }}
+            >
+              Beurt naar andere team (met bonusletter)
+            </Button>
+          </>
+        )}
       </div>
 
       <TextInputWithSubmitButton
         autoFocus
         input={props.guesses.getInput()}
         setInput={(guess) => {
-          if (props.guesses && !isFinished) {
+          if (status === "running") {
             const clone = props.guesses.clone();
             clone.setInput(guess);
             props.setGuesses(clone);

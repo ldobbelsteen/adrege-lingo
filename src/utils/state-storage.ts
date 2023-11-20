@@ -63,6 +63,13 @@ export function useFirstTeamGuessing() {
   return useStoredState("firstTeamGuessing", true);
 }
 
+export function useGuessingStatus() {
+  return useStoredState<"running" | "paused" | "finished">(
+    "guessingStatus",
+    "running",
+  );
+}
+
 function useStoredState<T>(
   stateKey: string,
   defaultValue: T,

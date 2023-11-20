@@ -1,11 +1,6 @@
 ## TODO (op volgorde)
 - Timer bij raden woord
-    - Als timer voorbij, niet-bestaand woord, etc., dan beurtwissel met knop
-    - Beurtwissel betekent bonusletter (als er minimaal 2 letters nog geraden moeten worden)
-    - Beurtwissel kan extra rij betekenen
-    - Beurtwissel betekent fout geluidje
-    - Als na beurtwissel woord niet geraden is, goede woord laten zien
-    - Tijdens beurtwissel geen achtergrondmuziek
+- Goede woord laten zien knop
 - Goed gerade woord -> flikker animatie
 - Animatie nieuwe kaart -> vallende ballen, gegeven ballen plingetjes
 - Nieuwe rij door beurtwissel schuifanimatie

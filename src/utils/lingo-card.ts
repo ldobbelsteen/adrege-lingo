@@ -41,6 +41,8 @@ export class Card {
 
     this.isFavorite = create2DArray(dimensions, dimensions, false);
     this.dimensions = dimensions;
+
+    this.updateFavorites();
   }
 
   toggleGrabbed(i: number, j: number) {

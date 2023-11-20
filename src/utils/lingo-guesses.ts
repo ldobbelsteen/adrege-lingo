@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { create1DArray, create2DArray } from "./misc";
+import { create1DArray } from "./misc";
 import {
   letterCorrectLocation,
   letterIncorrect,
@@ -15,29 +15,53 @@ export enum Color {
 
 export class Guesses {
   private word: string[]; // array of chars
-  readonly maxGuesses: number;
-  readonly wordLength: number;
 
-  currentRow: number;
+  private currentRow: number;
   private currentInput: string[];
 
   private matrix: string[][]; // rows of guessed words
   private colors: Color[][];
+
   private discovered: string[]; // dot (.) indicates undiscovered
 
   constructor(word: string, maxGuesses: number) {
     this.word = Guesses.wordToChars(word);
-    this.maxGuesses = maxGuesses;
-    this.wordLength = this.word.length;
 
     this.currentRow = 0;
     this.currentInput = [];
 
-    this.colors = create2DArray(this.maxGuesses, this.word.length, Color.None);
-    this.matrix = create2DArray(this.maxGuesses, this.word.length, "");
+    this.matrix = [];
+    this.colors = [];
+
     this.discovered = create1DArray(this.word.length, ".");
     this.discovered[0] = this.word[0];
-    this.fillDiscovered();
+
+    for (let i = 0; i < maxGuesses; i++) {
+      this.addRow();
+    }
+
+    this.prefillDiscovered();
+  }
+
+  addRow() {
+    this.matrix.push(create1DArray(this.word.length, ""));
+    this.colors.push(create1DArray(this.word.length, Color.None));
+  }
+
+  maxGuesses() {
+    return this.matrix.length;
+  }
+
+  wordLength() {
+    return this.word.length;
+  }
+
+  getCurrentRow() {
+    return this.currentRow;
+  }
+
+  getWord() {
+    return this.word;
   }
 
   getInput() {
@@ -49,19 +73,20 @@ export class Guesses {
   }
 
   submitInput() {
-    if (this.currentInput.length === this.word.length) {
-      for (let i = 0; i < this.word.length; i++) {
-        if (this.currentInput[i] === this.word[i]) {
-          this.discovered[i] = this.word[i];
-        }
-      }
-
-      this.matrix[this.currentRow] = this.currentInput;
-      this.currentRow += 1;
-      this.currentInput = [];
-    } else {
+    if (this.currentInput.length !== this.word.length) {
       toast.error("Woord niet lang genoeg!");
     }
+
+    // Mark correct letters as discovered.
+    for (let i = 0; i < this.word.length; i++) {
+      if (this.currentInput[i] === this.word[i]) {
+        this.discovered[i] = this.word[i];
+      }
+    }
+
+    this.matrix[this.currentRow] = this.currentInput;
+    this.currentRow += 1;
+    this.currentInput = [];
   }
 
   getLetter(row: number, i: number) {
@@ -127,18 +152,42 @@ export class Guesses {
     letterIncorrect.play().catch(toast.error);
   }
 
-  isFinished(row: number) {
-    for (let i = 0; i < this.word.length; i++) {
-      if (this.word[i] !== this.matrix[row][i]) {
-        return false;
+  isCorrect() {
+    for (let j = 0; j < this.matrix.length; j++) {
+      let rowIsFinished = true;
+      for (let i = 0; i < this.word.length; i++) {
+        if (this.word[i] !== this.matrix[j][i]) {
+          rowIsFinished = false;
+        }
+      }
+      if (rowIsFinished) {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
-  fillDiscovered() {
+  prefillDiscovered() {
     for (let i = 0; i < this.word.length; i++) {
       this.matrix[this.currentRow][i] = this.discovered[i];
+    }
+  }
+
+  remainingUndiscovered() {
+    return this.discovered.filter((l) => l === ".").length;
+  }
+
+  outOfTries() {
+    return this.currentRow === this.matrix.length;
+  }
+
+  addBonusLetter() {
+    for (let i = 0; i < this.word.length; i++) {
+      if (this.discovered[i] === ".") {
+        this.discovered[i] = this.word[i];
+        this.prefillDiscovered();
+        return;
+      }
     }
   }
 
