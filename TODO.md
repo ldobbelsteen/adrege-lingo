@@ -1,7 +1,5 @@
 ## Belangrijk
-- Bij woord raden, alleen puntjes op de huidige rij, niet alle
-- Kleurfout fixen (bij woord 'test', raad: trek, terr en dan tets; dan kloppen de kleuren niet)
-- Onderscheid tussen teams eruit slopen (beurtselectie)\
+- Onderscheid tussen teams eruit slopen (beurtselectie)
 - Timer bij raden woord
     - Als timer voorbij, niet-bestaand woord, etc., dan beurtwissel met knop
     - Beurtwissel betekent bonusletter (als er minimaal 2 letters nog geraden moeten worden)
