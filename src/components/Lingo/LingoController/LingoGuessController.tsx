@@ -57,7 +57,7 @@ function LingoGuessInstance(props: {
   });
 
   // Start coloring animation when going to the next row.
-  const currentRow = props.guesses.getRow();
+  const { currentRow } = props.guesses;
   useEffect(() => {
     if (currentRow > 0) {
       setColorIndex({
@@ -77,7 +77,7 @@ function LingoGuessInstance(props: {
         setColorIndex({ ...colorIndex, i: colorIndex.i + 1 });
       }
       if (colorIndex.i === props.guesses.wordLength) {
-        if (props.guesses.isComplete(colorIndex.row)) {
+        if (props.guesses.isFinished(colorIndex.row)) {
           setFinished(true);
           guessCorrect.play().catch(toast.error);
         } else if (colorIndex.row === props.guesses.maxGuesses - 1) {
@@ -85,7 +85,7 @@ function LingoGuessInstance(props: {
           guessOutOfTries.play().catch(toast.error);
         } else {
           const clone = props.guesses.clone();
-          clone.prefillDiscovered(colorIndex.row + 1);
+          clone.fillDiscovered();
           props.setGuesses(clone);
         }
         setColorIndex({

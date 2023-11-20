@@ -29,7 +29,7 @@ export function LingoGuessView(props: { guesses: Guesses; teamOne: boolean }) {
                       <div className="h-24 w-24 absolute rounded-full bg-geel"></div>
                     )}
                     <div className="h-24 w-24 absolute flex justify-center items-center">
-                      {props.guesses.getChar(i, j)}
+                      {props.guesses.getLetter(i, j)}
                     </div>
                   </div>
                 </td>

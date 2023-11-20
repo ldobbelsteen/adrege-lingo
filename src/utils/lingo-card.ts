@@ -4,8 +4,8 @@ import { guessCorrect, lingoBall } from "./sound-effects";
 
 export class Card {
   private values: number[][];
-  private grabbed: boolean[][];
-  private favorite: boolean[][];
+  private isGrabbed: boolean[][];
+  private isFavorite: boolean[][];
   readonly dimensions: number;
 
   constructor(
@@ -28,26 +28,26 @@ export class Card {
       }
     }
 
-    this.grabbed = create2DArray(dimensions, dimensions, false);
+    this.isGrabbed = create2DArray(dimensions, dimensions, false);
     for (let p = prefilled; p > 0; p--) {
       const i = randomPosInt(dimensions);
       const j = randomPosInt(dimensions);
-      if (this.grabbed[i][j]) {
+      if (this.isGrabbed[i][j]) {
         p += 1;
       } else {
-        this.grabbed[i][j] = true;
+        this.isGrabbed[i][j] = true;
       }
     }
 
-    this.favorite = create2DArray(dimensions, dimensions, false);
+    this.isFavorite = create2DArray(dimensions, dimensions, false);
     this.dimensions = dimensions;
   }
 
   toggleGrabbed(i: number, j: number) {
-    if (this.grabbed[i][j]) {
-      this.grabbed[i][j] = false;
+    if (this.isGrabbed[i][j]) {
+      this.isGrabbed[i][j] = false;
     } else {
-      this.grabbed[i][j] = true;
+      this.isGrabbed[i][j] = true;
       if (this.hasLingo()) {
         guessCorrect.play().catch(toast.error);
       } else {
@@ -61,19 +61,19 @@ export class Card {
     return this.values[i][j];
   }
 
-  isGrabbed(i: number, j: number) {
-    return this.grabbed[i][j];
+  getIsGrabbed(i: number, j: number) {
+    return this.isGrabbed[i][j];
   }
 
-  isFavorite(i: number, j: number) {
-    return this.favorite[i][j];
+  getIsFavorite(i: number, j: number) {
+    return this.isFavorite[i][j];
   }
 
   private updateFavorites() {
     for (let i = 0; i < this.dimensions; i++) {
       for (let j = 0; j < this.dimensions; j++) {
-        this.favorite[i][j] =
-          !this.grabbed[i][j] &&
+        this.isFavorite[i][j] =
+          !this.isGrabbed[i][j] &&
           (this.countGrabbedRow(i) === this.dimensions - 1 ||
             this.countGrabbedCol(j) === this.dimensions - 1);
       }
@@ -83,7 +83,7 @@ export class Card {
   private countGrabbedRow(i: number) {
     let count = 0;
     for (let j = 0; j < this.dimensions; j++) {
-      if (this.grabbed[i][j]) {
+      if (this.isGrabbed[i][j]) {
         count += 1;
       }
     }
@@ -93,7 +93,7 @@ export class Card {
   private countGrabbedCol(j: number) {
     let count = 0;
     for (let i = 0; i < this.dimensions; i++) {
-      if (this.grabbed[i][j]) {
+      if (this.isGrabbed[i][j]) {
         count += 1;
       }
     }

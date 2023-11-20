@@ -18,12 +18,12 @@ export class Guesses {
   readonly maxGuesses: number;
   readonly wordLength: number;
 
-  private currentRow: number;
+  currentRow: number;
   private currentInput: string[];
 
-  private chars: string[][];
+  private matrix: string[][]; // rows of guessed words
   private colors: Color[][];
-  private discovered: (string | undefined)[];
+  private discovered: string[]; // dot (.) indicates undiscovered
 
   constructor(word: string, maxGuesses: number) {
     this.word = Guesses.wordToChars(word);
@@ -34,14 +34,10 @@ export class Guesses {
     this.currentInput = [];
 
     this.colors = create2DArray(this.maxGuesses, this.word.length, Color.None);
-    this.chars = create2DArray(this.maxGuesses, this.word.length, ".");
-    this.chars[0][0] = this.word[0];
-    this.discovered = create1DArray(this.word.length, undefined);
+    this.matrix = create2DArray(this.maxGuesses, this.word.length, "");
+    this.discovered = create1DArray(this.word.length, ".");
     this.discovered[0] = this.word[0];
-  }
-
-  getRow() {
-    return this.currentRow;
+    this.fillDiscovered();
   }
 
   getInput() {
@@ -54,17 +50,23 @@ export class Guesses {
 
   submitInput() {
     if (this.currentInput.length === this.word.length) {
-      this.chars[this.currentRow] = this.currentInput;
+      for (let i = 0; i < this.word.length; i++) {
+        if (this.currentInput[i] === this.word[i]) {
+          this.discovered[i] = this.word[i];
+        }
+      }
+
+      this.matrix[this.currentRow] = this.currentInput;
       this.currentRow += 1;
       this.currentInput = [];
     }
   }
 
-  getChar(row: number, i: number) {
+  getLetter(row: number, i: number) {
     if (this.currentRow === row && !(this.currentInput.length <= i)) {
       return this.currentInput[i];
     } else {
-      return this.chars[row][i];
+      return this.matrix[row][i];
     }
   }
 
@@ -77,7 +79,7 @@ export class Guesses {
       return;
     }
 
-    if (this.chars[row][i] === this.word[i]) {
+    if (this.matrix[row][i] === this.word[i]) {
       this.colors[row][i] = Color.CorrectLocation;
       letterCorrectLocation.play().catch(toast.error);
       return;
@@ -93,11 +95,14 @@ export class Guesses {
       }
     }
 
-    // Count number of occurrences of correct letters in row.
+    // Count number of occurrences of correct (or already yellowed) letters in row.
     const correctOccs: { [letter: string]: number } = {};
-    for (let j = 0; j < this.word.length; j++) {
-      const letter = this.chars[row][j];
-      if (letter === this.word[j]) {
+    for (let i = 0; i < this.word.length; i++) {
+      const letter = this.matrix[row][i];
+      if (
+        letter === this.word[i] ||
+        this.getColor(row, i) === Color.IncorrectLocation
+      ) {
         if (correctOccs[letter]) {
           correctOccs[letter] += 1;
         } else {
@@ -107,8 +112,9 @@ export class Guesses {
     }
 
     if (
-      this.word.includes(this.chars[row][i]) &&
-      correctOccs[this.chars[row][i]] < wordOccs[this.chars[row][i]]
+      this.word.includes(this.matrix[row][i]) &&
+      (!correctOccs[this.matrix[row][i]] ||
+        correctOccs[this.matrix[row][i]] < wordOccs[this.matrix[row][i]])
     ) {
       this.colors[row][i] = Color.IncorrectLocation;
       letterIncorrectLocation.play().catch(toast.error);
@@ -119,34 +125,19 @@ export class Guesses {
     letterIncorrect.play().catch(toast.error);
   }
 
-  isComplete(row: number) {
+  isFinished(row: number) {
     for (let i = 0; i < this.word.length; i++) {
-      if (this.word[i] !== this.chars[row][i]) {
+      if (this.word[i] !== this.matrix[row][i]) {
         return false;
       }
     }
     return true;
   }
 
-  prefillDiscovered(row: number) {
-    for (const discovered of this.getDiscovered()) {
-      this.chars[row][discovered.index] = discovered.letter;
+  fillDiscovered() {
+    for (let i = 0; i < this.word.length; i++) {
+      this.matrix[this.currentRow][i] = this.discovered[i];
     }
-  }
-
-  private getDiscovered() {
-    const result: { letter: string; index: number }[] = [];
-    for (let j = 0; j < this.maxGuesses; j++) {
-      for (let i = 0; i < this.word.length; i++) {
-        if (this.colors[j][i] === Color.CorrectLocation) {
-          result.push({
-            letter: this.chars[j][i],
-            index: i,
-          });
-        }
-      }
-    }
-    return new Set(result);
   }
 
   private static wordToChars(word: string) {
