@@ -14,7 +14,7 @@ export function TextInput(props: {
       autoFocus={props.autoFocus}
       placeholder={props.placeholder}
       onChange={(ev) => props.setInput(ev.target.value)}
-      className="text-donkerderrood rounded m-1 p-2"
+      className="text-donkerderrood rounded p-2 m-2"
     />
   );
 }

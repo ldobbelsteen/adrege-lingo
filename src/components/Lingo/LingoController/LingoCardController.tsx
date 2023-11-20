@@ -1,49 +1,44 @@
-import React, { useCallback } from "react";
+import React from "react";
 import toast from "react-hot-toast";
 import { Card } from "../../../utils/lingo-card";
 import {
   useCardDimensions,
-  useCardIndex,
   useCardMaxValue,
   useCardPrefilled,
-  useCards,
-  useTeamCount,
+  useFirstTeamCard,
+  useFirstTeamCardSelected,
+  useSecondTeamCard,
+  useTeamMode,
 } from "../../../utils/state-storage";
 import { Button } from "../../Button";
 import { Multiselect } from "../../Multiselect";
 import { LingoCardView } from "../LingoView/LingoCardView";
-import { teamIndexToName } from ".";
 
 export function LingoCardController() {
   const [cardPrefilled] = useCardPrefilled();
   const [cardMaxValue] = useCardMaxValue();
   const [cardDimensions] = useCardDimensions();
-  const [teamCount] = useTeamCount();
+  const [teamMode] = useTeamMode();
 
-  const [cards, setCards] = useCards();
-  const [cardIndex, setCardIndex] = useCardIndex();
+  const [firstTeamCard, setFirstTeamCard] = useFirstTeamCard();
+  const [secondTeamCard, setSecondTeamCard] = useSecondTeamCard();
+  const [firstTeamCardSelected, setFirstTeamCardSelected] =
+    useFirstTeamCardSelected();
 
-  const card = cards[cardIndex];
-  const setCard = useCallback(
-    (newValue: Card | null) => {
-      const next = [...cards];
-      next[cardIndex] = newValue;
-      setCards(next);
-    },
-    [cardIndex, cards, setCards],
-  );
+  const card = firstTeamCardSelected ? firstTeamCard : secondTeamCard;
+  const setCard = firstTeamCardSelected ? setFirstTeamCard : setSecondTeamCard;
 
   return (
     <>
-      {teamCount >= 2 && (
+      {teamMode && (
         <div>
           <Multiselect
-            selected={cardIndex}
-            setSelected={setCardIndex}
-            options={cards.reduce(
-              (acc, _, i) => ({ ...acc, [`Team ${i + 1}`]: i }),
-              {},
-            )}
+            selected={firstTeamCardSelected}
+            setSelected={setFirstTeamCardSelected}
+            options={{
+              "Team 1": true,
+              "Team 2": false,
+            }}
           />
         </div>
       )}
@@ -63,7 +58,7 @@ export function LingoCardController() {
             onClick={() => {
               setCard(
                 new Card(
-                  cardIndex % 2 === 0 ? "even" : "uneven",
+                  firstTeamCardSelected ? "even" : "uneven",
                   cardMaxValue,
                   cardDimensions,
                   cardPrefilled,
@@ -80,7 +75,7 @@ export function LingoCardController() {
       {card && (
         <LingoCardView
           card={card}
-          team={teamCount >= 2 ? teamIndexToName(cardIndex) : null}
+          isFirstTeamCard={teamMode ? firstTeamCardSelected : null}
           setCard={setCard}
         />
       )}

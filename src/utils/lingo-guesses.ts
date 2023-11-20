@@ -59,6 +59,8 @@ export class Guesses {
       this.matrix[this.currentRow] = this.currentInput;
       this.currentRow += 1;
       this.currentInput = [];
+    } else {
+      toast.error("Woord niet lang genoeg!");
     }
   }
 

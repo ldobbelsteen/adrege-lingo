@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
 import {
-  useCardIndex,
-  useCards,
+  useFirstTeamCard,
+  useFirstTeamCardSelected,
+  useFirstTeamGuessing,
   useGuesses,
-  useGuessingTeam,
   useScreen,
-  useTeamCount,
+  useSecondTeamCard,
+  useTeamMode,
 } from "../../../utils/state-storage";
-import { teamIndexToName } from "../LingoController";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
 import { LingoGuessView } from "./LingoGuessView";
@@ -15,14 +15,16 @@ import { LingoStartView } from "./LingoStartView";
 
 export const LingoView = () => {
   const [screen] = useScreen();
-  const [teamCount] = useTeamCount();
+  const [teamMode] = useTeamMode();
 
   const [guesses] = useGuesses();
-  const [guessingTeam] = useGuessingTeam();
+  const [firstTeamGuessing] = useFirstTeamGuessing();
 
-  const [cards] = useCards();
-  const [cardIndex] = useCardIndex();
-  const card = cards[cardIndex];
+  const [firstTeamCard] = useFirstTeamCard();
+  const [secondTeamCard] = useSecondTeamCard();
+  const [firstTeamCardSelected] = useFirstTeamCardSelected();
+
+  const card = firstTeamCardSelected ? firstTeamCard : secondTeamCard;
 
   const component = useMemo((): React.JSX.Element => {
     switch (screen) {
@@ -31,7 +33,7 @@ export const LingoView = () => {
           return (
             <LingoGuessView
               guesses={guesses}
-              team={teamCount >= 2 ? teamIndexToName(guessingTeam) : null}
+              firstTeamGuessing={teamMode ? firstTeamGuessing : null}
             />
           );
         }
@@ -42,7 +44,7 @@ export const LingoView = () => {
           return (
             <LingoCardView
               card={card}
-              team={teamCount >= 2 ? teamIndexToName(cardIndex) : null}
+              isFirstTeamCard={teamMode ? firstTeamCardSelected : null}
             />
           );
         }
@@ -50,7 +52,14 @@ export const LingoView = () => {
       }
     }
     return <LingoStartView />;
-  }, [card, cardIndex, guesses, guessingTeam, screen, teamCount]);
+  }, [
+    card,
+    firstTeamCardSelected,
+    firstTeamGuessing,
+    guesses,
+    screen,
+    teamMode,
+  ]);
 
   return (
     <main

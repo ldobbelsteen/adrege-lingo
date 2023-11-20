@@ -8,50 +8,46 @@ import {
   guessTimeout,
 } from "../../../utils/sound-effects";
 import {
+  useFirstTeamGuessing,
   useGuesses,
-  useGuessingTeam,
   useMaxGuesses,
-  useTeamCount,
+  useTeamMode,
 } from "../../../utils/state-storage";
 import { Button } from "../../Button";
 import { Multiselect } from "../../Multiselect";
 import { Music } from "../../Music";
 import { TextInputWithSubmitButton } from "../../TextInput";
 import { LingoGuessView } from "../LingoView/LingoGuessView";
-import { teamIndexToName } from ".";
 
 export function LingoGuessController() {
   const [newWord, setNewWord] = useState("");
   const [maxGuesses] = useMaxGuesses();
-  const [teamCount] = useTeamCount();
+  const [teamMode] = useTeamMode();
 
   const [guesses, setGuesses] = useGuesses();
-  const [guessingTeam, setGuessingTeam] = useGuessingTeam();
+  const [firstTeamGuessing, setFirstTeamGuessing] = useFirstTeamGuessing();
 
   if (guesses) {
     return (
       <LingoGuessInstance
         guesses={guesses}
         setGuesses={setGuesses}
-        guessingTeam={guessingTeam}
-        setGuessingTeam={setGuessingTeam}
+        firstTeamGuessing={teamMode ? firstTeamGuessing : null}
       />
     );
   } else {
     return (
       <>
-        {teamCount >= 2 && (
+        {teamMode && (
           <div>
+            <span>Team aan zet: </span>
             <Multiselect
-              selected={guessingTeam}
-              setSelected={setGuessingTeam}
-              options={[...Array(teamCount).keys()].reduce(
-                (acc, teamIndex) => ({
-                  ...acc,
-                  [teamIndexToName(teamIndex)]: teamIndex,
-                }),
-                {},
-              )}
+              selected={firstTeamGuessing}
+              setSelected={setFirstTeamGuessing}
+              options={{
+                "Team 1": true,
+                "Team 2": false,
+              }}
             />
           </div>
         )}
@@ -76,9 +72,8 @@ export function LingoGuessController() {
 
 function LingoGuessInstance(props: {
   guesses: Guesses;
-  guessingTeam: number;
-  setGuessingTeam: (team: number) => void;
   setGuesses: (g: Guesses | null) => void;
+  firstTeamGuessing: boolean | null;
 }) {
   const [isFinished, setFinished] = useState(false);
   const [colorIndex, setColorIndex] = useState({
@@ -173,7 +168,7 @@ function LingoGuessInstance(props: {
 
       <LingoGuessView
         guesses={props.guesses}
-        team={teamIndexToName(props.guessingTeam)}
+        firstTeamGuessing={props.firstTeamGuessing}
       />
     </>
   );

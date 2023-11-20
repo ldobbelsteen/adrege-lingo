@@ -4,7 +4,7 @@ import { Title } from "../../Title";
 
 export function LingoCardView(props: {
   card: Card;
-  team: string | null;
+  isFirstTeamCard: boolean | null;
   setCard?: (card: Card) => void;
 }) {
   const onClick = (i: number, j: number) => {
@@ -18,7 +18,11 @@ export function LingoCardView(props: {
   return (
     <section>
       <Title
-        text={props.team ? `Lingokaart ${props.team}` : "Lingokaart"}
+        text={
+          props.isFirstTeamCard === null
+            ? "Lingokaart"
+            : `Lingokaart team ${props.isFirstTeamCard ? "1" : "2"}`
+        }
         textSize="text-4xl"
       />
       <table>

@@ -15,7 +15,7 @@ export function NumberInput(props: {
       max={props.max}
       placeholder={props.placeholder}
       onChange={(ev) => props.setInput(parseInt(ev.target.value))}
-      className="text-donkerderrood rounded m-1 p-2 w-16"
+      className="text-donkerderrood rounded p-2 m-2 w-16"
     />
   );
 }

@@ -8,7 +8,6 @@ import {
 import { Screen } from "../components/Lingo";
 import { Card } from "./lingo-card";
 import { Guesses } from "./lingo-guesses";
-import { create1DArray } from "./misc";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -24,8 +23,8 @@ export function useScreen() {
   return useStoredState("screen", Screen.Settings);
 }
 
-export function useTeamCount() {
-  return useStoredState("teamCount", 2);
+export function useTeamMode() {
+  return useStoredState("teamMode", true);
 }
 
 export function useCardPrefilled() {
@@ -44,26 +43,24 @@ export function useMaxGuesses() {
   return useStoredState("maxGuesses", 5);
 }
 
-export function useCards() {
-  const [teamCount] = useTeamCount();
-
-  return useStoredState<(Card | null)[]>(
-    "cards",
-    create1DArray(teamCount, null),
-    jsonArrayParser(Card.fromJson),
-  );
+export function useFirstTeamCard() {
+  return useStoredState("firstTeamCard", null, Card.fromJson);
 }
 
-export function useCardIndex() {
-  return useStoredState("cardIndex", 0);
+export function useSecondTeamCard() {
+  return useStoredState("secondTeamCard", null, Card.fromJson);
+}
+
+export function useFirstTeamCardSelected() {
+  return useStoredState("firstTeamCardSelected", true);
 }
 
 export function useGuesses() {
   return useStoredState<Guesses | null>("guesses", null, Guesses.fromJson);
 }
 
-export function useGuessingTeam() {
-  return useStoredState("guessingTeam", 0);
+export function useFirstTeamGuessing() {
+  return useStoredState("firstTeamGuessing", true);
 }
 
 function useStoredState<T>(
@@ -78,11 +75,10 @@ function useStoredState<T>(
 
   const getStorage = useCallback((): T => {
     const value = localStorage.getItem(stateKey);
-    if (value) {
-      return fromJson ? fromJson(value) : (JSON.parse(value) as T);
-    } else {
+    if (!value || value === "null") {
       return defaultValue;
     }
+    return fromJson ? fromJson(value) : (JSON.parse(value) as T);
   }, [defaultValue, stateKey, fromJson]);
 
   const [state, setState] = useState(getStorage);
@@ -130,21 +126,4 @@ function useStoredState<T>(
   );
 
   return [state, setStateWrapper];
-}
-
-function jsonArrayParser<T>(elementParser: (elementJson: string) => T) {
-  return (arrayJson: string) => {
-    const result = [];
-    const rawValues = JSON.parse(arrayJson) as unknown[];
-    for (const rawValue of rawValues.values()) {
-      if (rawValue === null) {
-        result.push(null);
-      } else {
-        const stringified = JSON.stringify(rawValue);
-        const value = elementParser(stringified);
-        result.push(value);
-      }
-    }
-    return result;
-  };
 }

@@ -6,9 +6,10 @@ import {
   useCardMaxValue,
   useCardPrefilled,
   useMaxGuesses,
-  useTeamCount,
+  useTeamMode,
 } from "../../../utils/state-storage";
 import { Button } from "../../Button";
+import { Checkbox } from "../../Checkbox";
 import { NumberInput } from "../../NumberInput";
 import { WindowToggle } from "../../WindowToggle";
 
@@ -17,7 +18,7 @@ export function LingoSettingsController() {
   const [cardMaxValue, setCardMaxValue] = useCardMaxValue();
   const [cardPrefilled, setCardPrefilled] = useCardPrefilled();
   const [maxGuesses, setMaxGuesses] = useMaxGuesses();
-  const [teamCount, setTeamCount] = useTeamCount();
+  const [teamMode, setTeamMode] = useTeamMode();
 
   return (
     <>
@@ -42,13 +43,8 @@ export function LingoSettingsController() {
         </Button>
       </div>
       <div>
-        <span>Aantal teams</span>
-        <NumberInput
-          input={teamCount}
-          setInput={setTeamCount}
-          min={1}
-          max={4}
-        />
+        <span>Teammodus</span>
+        <Checkbox checked={teamMode} setChecked={setTeamMode} />
       </div>
       <div>
         <span>Afmetingen van lingokaarten</span>

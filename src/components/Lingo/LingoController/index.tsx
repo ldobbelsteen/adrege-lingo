@@ -54,7 +54,3 @@ export const LingoController = () => {
     </main>
   );
 };
-
-export function teamIndexToName(i: number) {
-  return `Team ${i + 1}`;
-}

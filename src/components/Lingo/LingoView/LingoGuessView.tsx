@@ -4,12 +4,16 @@ import { Title } from "../../Title";
 
 export function LingoGuessView(props: {
   guesses: Guesses;
-  team: string | null;
+  firstTeamGuessing: boolean | null;
 }) {
   return (
     <section>
       <Title
-        text={props.team ? `Woord raden ${props.team}` : "Woord raden"}
+        text={
+          props.firstTeamGuessing === null
+            ? "Woord raden"
+            : `Woord raden team ${props.firstTeamGuessing ? "1" : "2"}`
+        }
         textSize="text-4xl"
       />
       <table>

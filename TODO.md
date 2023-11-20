@@ -1,5 +1,4 @@
-## Belangrijk
-- Team aantal instellen op beginscherm
+## TODO (op volgorde)
 - Timer bij raden woord
     - Als timer voorbij, niet-bestaand woord, etc., dan beurtwissel met knop
     - Beurtwissel betekent bonusletter (als er minimaal 2 letters nog geraden moeten worden)
@@ -7,14 +6,12 @@
     - Beurtwissel betekent fout geluidje
     - Als na beurtwissel woord niet geraden is, goede woord laten zien
     - Tijdens beurtwissel geen achtergrondmuziek
-
-## Zou mooi zijn
-- Animatie nieuwe kaart (vallende ballen, gegeven ballen pling)
-- Goed gerade woorden flikker animatie
-- Nieuwe rij schuifanimatie
-- Lingo rij animatie
-- Mooiere styling (minder plat)
+- Goed gerade woord -> flikker animatie
+- Animatie nieuwe kaart -> vallende ballen, gegeven ballen plingetjes
+- Nieuwe rij door beurtwissel schuifanimatie
+- Lingo rij door bal animatie
 - Meer geluiden
     - Nieuwe rij pling
     - Bonusletter pling
     - Groene bal pling
+- Mooiere styling (minder plat)
