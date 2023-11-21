@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
-import { useScreen } from "../../../utils/state-storage";
+import { useScreen } from "../../../utils/storage";
 import { Multiselect } from "../../Multiselect";
 import { Title } from "../../Title";
 import { Screen } from "../index";
@@ -27,7 +27,7 @@ export const LingoController = () => {
 
   return (
     <main
-      className={`w-full h-full text-center text-wit text-xl bg-donkerrood`}
+      className={`w-full min-h-full text-center text-wit text-xl bg-donkerrood`}
     >
       <Toaster position="top-right" />
       <div className="flex justify-center items-center bg-donkerderrood p-2">

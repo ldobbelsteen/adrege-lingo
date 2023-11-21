@@ -1,7 +1,6 @@
 ## TODO (op volgorde)
-- Timer bij raden woord
 - Goede woord laten zien knop
-- Goed gerade woord -> flikker animatie
+- Goed geraden woord -> flikker animatie
 - Animatie nieuwe kaart -> vallende ballen, gegeven ballen plingetjes
 - Nieuwe rij door beurtwissel schuifanimatie
 - Lingo rij door bal animatie

@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "../../../utils/lingo-card";
+import { Card, toggleGrabbed } from "../../../utils/card";
 import { Title } from "../../Title";
 
 export function LingoCardView(props: {
@@ -7,14 +7,6 @@ export function LingoCardView(props: {
   isFirstTeamCard: boolean | null;
   setCard?: (card: Card) => void;
 }) {
-  const onClick = (i: number, j: number) => {
-    if (props.setCard) {
-      const clone = props.card.clone();
-      clone.toggleGrabbed(i, j);
-      props.setCard(clone);
-    }
-  };
-
   return (
     <section>
       <Title
@@ -33,19 +25,22 @@ export function LingoCardView(props: {
                 <td key={j}>
                   <button
                     type="button"
-                    onClick={() => onClick(i, j)}
+                    onClick={() =>
+                      props.setCard &&
+                      props.setCard(toggleGrabbed(props.card, i, j))
+                    }
                     style={{
                       boxShadow: "inset -25px -15px 40px rgba(0,0,0,.3)",
                     }}
                     className={`block h-24 w-24 m-1 rounded-full flex justify-center items-center text-6xl ${
-                      props.card.getIsGrabbed(i, j) ? "bg-geel" : "bg-wit"
+                      props.card.isGrabbed[i][j] ? "bg-geel" : "bg-wit"
                     } ${
-                      props.card.getIsFavorite(i, j)
+                      props.card.isFavorite[i][j]
                         ? "text-zwart"
                         : "text-donkerrood"
                     }`}
                   >
-                    {props.card.getIsGrabbed(i, j) || props.card.getValue(i, j)}
+                    {!props.card.isGrabbed[i][j] && props.card.values[i][j]}
                   </button>
                 </td>
               ))}

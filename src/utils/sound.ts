@@ -8,7 +8,7 @@ import letterIncorrectUrl from "../assets/effects/letter_incorrect.ogg";
 import letterIncorrectLocationUrl from "../assets/effects/letter_incorrect_location.ogg";
 import lingoBallUrl from "../assets/effects/lingo_ball.ogg";
 
-class SoundEffect {
+class Sound {
   context: AudioContext;
   buffer: AudioBuffer | undefined;
 
@@ -39,12 +39,10 @@ class SoundEffect {
   }
 }
 
-export const guessCorrect = new SoundEffect(guessCorrectUrl);
-export const guessOutOfTries = new SoundEffect(guessOutOfTriesUrl);
-export const guessTimeout = new SoundEffect(guessTimeoutUrl);
-export const letterCorrectLocation = new SoundEffect(letterCorrectLocationUrl);
-export const letterIncorrectLocation = new SoundEffect(
-  letterIncorrectLocationUrl,
-);
-export const letterIncorrect = new SoundEffect(letterIncorrectUrl);
-export const lingoBall = new SoundEffect(lingoBallUrl);
+export const guessCorrect = new Sound(guessCorrectUrl);
+export const guessOutOfTries = new Sound(guessOutOfTriesUrl);
+export const guessTimeout = new Sound(guessTimeoutUrl);
+export const letterCorrectLocation = new Sound(letterCorrectLocationUrl);
+export const letterIncorrectLocation = new Sound(letterIncorrectLocationUrl);
+export const letterIncorrect = new Sound(letterIncorrectUrl);
+export const lingoBall = new Sound(lingoBallUrl);

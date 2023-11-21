@@ -7,7 +7,7 @@ import {
   useCardPrefilled,
   useMaxGuesses,
   useTeamMode,
-} from "../../../utils/state-storage";
+} from "../../../utils/storage";
 import { Button } from "../../Button";
 import { Checkbox } from "../../Checkbox";
 import { NumberInput } from "../../NumberInput";

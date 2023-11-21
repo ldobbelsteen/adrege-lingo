@@ -7,7 +7,7 @@ import {
   useScreen,
   useSecondTeamCard,
   useTeamMode,
-} from "../../../utils/state-storage";
+} from "../../../utils/storage";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
 import { LingoGuessView } from "./LingoGuessView";
@@ -63,15 +63,9 @@ export const LingoView = () => {
 
   return (
     <main
-      className={`w-full h-full text-center text-wit text-xl bg-donkerrood`}
+      className={`w-full min-h-full p-2 flex justify-center items-center text-center text-wit text-xl bg-donkerrood bg-[url('../assets/sneeuw.svg')] bg-repeat-x bg-bottom`}
     >
-      <div
-        className={`w-full h-full flex justify-center items-center p-2 bg-[url('../assets/sneeuw.svg')] bg-repeat-x bg-bottom`}
-      >
-        <div className={`m-2 p-4 bg-donkerderrood rounded-2xl`}>
-          {component}
-        </div>
-      </div>
+      <div className={`m-2 p-4 bg-donkerderrood rounded-2xl`}>{component}</div>
     </main>
   );
 };

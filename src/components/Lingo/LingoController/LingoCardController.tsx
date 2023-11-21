@@ -1,6 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast";
-import { Card } from "../../../utils/lingo-card";
+import { newCard } from "../../../utils/card";
 import {
   useCardDimensions,
   useCardMaxValue,
@@ -9,7 +9,7 @@ import {
   useFirstTeamCardSelected,
   useSecondTeamCard,
   useTeamMode,
-} from "../../../utils/state-storage";
+} from "../../../utils/storage";
 import { Button } from "../../Button";
 import { Multiselect } from "../../Multiselect";
 import { LingoCardView } from "../LingoView/LingoCardView";
@@ -57,7 +57,7 @@ export function LingoCardController() {
           <Button
             onClick={() => {
               setCard(
-                new Card(
+                newCard(
                   firstTeamCardSelected ? "even" : "uneven",
                   cardMaxValue,
                   cardDimensions,

@@ -1,20 +1,33 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import guessingMusicUrl from "../../../assets/guessing_music.ogg";
-import { Guesses } from "../../../utils/lingo-guesses";
+import {
+  Guesses,
+  addBonusLetter,
+  addColor,
+  addRow,
+  isCorrect,
+  isOutOfTries,
+  newGuesses,
+  prefillDiscovered,
+  remainingUndiscovered,
+  submitInput,
+  withInput,
+} from "../../../utils/guesses";
 import {
   guessCorrect,
   guessOutOfTries,
   guessTimeout,
-} from "../../../utils/sound-effects";
+} from "../../../utils/sound";
 import {
   useFirstTeamGuessing,
   useGuessingStatus,
   useGuesses,
   useMaxGuesses,
   useTeamMode,
-} from "../../../utils/state-storage";
+} from "../../../utils/storage";
 import { Button } from "../../Button";
+import { Elapsed } from "../../Elapsed";
 import { Multiselect } from "../../Multiselect";
 import { Music } from "../../Music";
 import { TextInputWithSubmitButton } from "../../TextInput";
@@ -61,7 +74,7 @@ export function LingoGuessController() {
           submitButtonText="Start nieuw woord"
           onSubmit={() => {
             if (newWord.length >= 3) {
-              setGuesses(new Guesses(newWord, maxGuesses));
+              setGuesses(newGuesses(newWord, maxGuesses));
               setNewWord("");
               toast.success("Woord gestart!");
             }
@@ -79,53 +92,54 @@ function LingoGuessInstance(props: {
   toggleTeamGuessing: () => void;
 }) {
   const [status, setStatus] = useGuessingStatus();
+  const [startTime, setStartTime] = useState(new Date());
   const [colorIndex, setColorIndex] = useState({
-    row: -1,
-    i: props.guesses.wordLength() + 1,
+    i: -1,
+    j: props.guesses.targetChars.length + 1,
   });
 
-  // Set status to running when the word changes (a.k.a. new word)
-  const word = props.guesses.getWord();
+  useEffect(() => {
+    if (status === "running") {
+      setStartTime(new Date());
+    }
+  }, [status]);
+
+  // Set status to running when the word changes
   useEffect(() => {
     setStatus("running");
-  }, [word, setStatus]);
+  }, [props.guesses.targetChars, setStatus]);
 
   // Start coloring animation when going to the next row.
-  const currentRow = props.guesses.getCurrentRow();
   useEffect(() => {
-    if (currentRow > 0) {
+    if (props.guesses.currentRow > 0) {
       setColorIndex({
-        row: currentRow - 1,
-        i: 0,
+        i: props.guesses.currentRow - 1,
+        j: 0,
       });
     }
-  }, [currentRow]);
+  }, [props.guesses.currentRow]);
 
   // Color the cell at the current index after an interval.
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (colorIndex.i < props.guesses.wordLength()) {
-        const clone = props.guesses.clone();
-        clone.setColor(colorIndex.row, colorIndex.i);
-        props.setGuesses(clone);
-      } else if (colorIndex.i === props.guesses.wordLength()) {
-        if (props.guesses.isCorrect()) {
+      if (colorIndex.j < props.guesses.targetChars.length) {
+        props.setGuesses(addColor(props.guesses, colorIndex.i, colorIndex.j));
+      } else if (colorIndex.j === props.guesses.targetChars.length) {
+        if (isCorrect(props.guesses)) {
           if (status === "running") {
             guessCorrect.play().catch(toast.error);
             setStatus("finished");
           }
-        } else if (props.guesses.outOfTries()) {
+        } else if (isOutOfTries(props.guesses)) {
           if (status === "running") {
             guessOutOfTries.play().catch(toast.error);
             setStatus("paused");
           }
         } else if (status === "running") {
-          const clone = props.guesses.clone();
-          clone.prefillDiscovered();
-          props.setGuesses(clone);
+          props.setGuesses(prefillDiscovered(props.guesses));
         }
       }
-      setColorIndex({ ...colorIndex, i: colorIndex.i + 1 });
+      setColorIndex({ ...colorIndex, j: colorIndex.j + 1 });
     }, 200);
     return () => clearTimeout(timeout);
   }, [colorIndex, props, setStatus, status]);
@@ -145,27 +159,31 @@ function LingoGuessInstance(props: {
         </Button>
 
         {status === "running" && (
-          <Button
-            onClick={() => {
-              setStatus("paused");
-              guessTimeout.play().catch(toast.error);
-              toast.error("Tijd voorbij!");
-            }}
-          >
-            Tijd voorbij / fout woord
-          </Button>
+          <>
+            <Elapsed start={startTime} />
+            <Button
+              onClick={() => {
+                setStatus("paused");
+                guessTimeout.play().catch(toast.error);
+                toast.error("Tijd voorbij!");
+              }}
+            >
+              Tijd voorbij / fout woord
+            </Button>
+          </>
         )}
 
         {status === "paused" && (
           <>
             <Button
               onClick={() => {
-                const clone = props.guesses.clone();
-                if (clone.outOfTries()) {
-                  clone.addRow();
+                let next = props.guesses;
+                if (isOutOfTries(next)) {
+                  next = addRow(next);
                 }
-                clone.prefillDiscovered();
-                props.setGuesses(clone);
+                next = prefillDiscovered(next);
+                next = withInput(next, "");
+                props.setGuesses(next);
                 setStatus("running");
               }}
             >
@@ -174,15 +192,16 @@ function LingoGuessInstance(props: {
             <Button
               onClick={() => {
                 props.toggleTeamGuessing();
-                const clone = props.guesses.clone();
-                if (clone.outOfTries()) {
-                  clone.addRow();
+                let next = props.guesses;
+                if (isOutOfTries(next)) {
+                  next = addRow(next);
                 }
-                if (clone.remainingUndiscovered() >= 2) {
-                  clone.addBonusLetter();
+                if (remainingUndiscovered(next) >= 2) {
+                  next = addBonusLetter(next);
                 }
-                clone.prefillDiscovered();
-                props.setGuesses(clone);
+                next = prefillDiscovered(next);
+                next = withInput(next, "");
+                props.setGuesses(next);
                 setStatus("running");
               }}
             >
@@ -194,21 +213,17 @@ function LingoGuessInstance(props: {
 
       <TextInputWithSubmitButton
         autoFocus
-        input={props.guesses.getInput()}
+        input={props.guesses.currentInput.join("")}
         setInput={(guess) => {
           if (status === "running") {
-            const clone = props.guesses.clone();
-            clone.setInput(guess);
-            props.setGuesses(clone);
+            props.setGuesses(withInput(props.guesses, guess));
           }
         }}
         placeholder="Typ poging..."
         submitButtonText="Poging insturen"
         onSubmit={() => {
           if (props.guesses) {
-            const clone = props.guesses.clone();
-            clone.submitInput();
-            props.setGuesses(clone);
+            props.setGuesses(submitInput(props.guesses));
           }
         }}
       />

@@ -6,8 +6,9 @@ import {
   useState,
 } from "react";
 import { Screen } from "../components/Lingo";
-import { Card } from "./lingo-card";
-import { Guesses } from "./lingo-guesses";
+
+import { Card } from "./card";
+import { Guesses } from "./guesses";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -44,11 +45,11 @@ export function useMaxGuesses() {
 }
 
 export function useFirstTeamCard() {
-  return useStoredState("firstTeamCard", null, Card.fromJson);
+  return useStoredState<Card | null>("firstTeamCard", null);
 }
 
 export function useSecondTeamCard() {
-  return useStoredState("secondTeamCard", null, Card.fromJson);
+  return useStoredState<Card | null>("secondTeamCard", null);
 }
 
 export function useFirstTeamCardSelected() {
@@ -56,7 +57,7 @@ export function useFirstTeamCardSelected() {
 }
 
 export function useGuesses() {
-  return useStoredState<Guesses | null>("guesses", null, Guesses.fromJson);
+  return useStoredState<Guesses | null>("guesses", null);
 }
 
 export function useFirstTeamGuessing() {
@@ -73,7 +74,6 @@ export function useGuessingStatus() {
 function useStoredState<T>(
   stateKey: string,
   defaultValue: T,
-  fromJson?: (s: string) => T,
 ): [T, Dispatch<SetStateAction<T>>] {
   const setStorage = useCallback(
     (value: T) => localStorage.setItem(stateKey, JSON.stringify(value)),
@@ -85,8 +85,8 @@ function useStoredState<T>(
     if (!value || value === "null") {
       return defaultValue;
     }
-    return fromJson ? fromJson(value) : (JSON.parse(value) as T);
-  }, [defaultValue, stateKey, fromJson]);
+    return JSON.parse(value) as T;
+  }, [defaultValue, stateKey]);
 
   const [state, setState] = useState(getStorage);
 

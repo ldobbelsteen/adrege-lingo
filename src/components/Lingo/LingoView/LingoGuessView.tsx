@@ -1,5 +1,5 @@
 import React from "react";
-import { Color, Guesses } from "../../../utils/lingo-guesses";
+import { Color, Guesses } from "../../../utils/guesses";
 import { Title } from "../../Title";
 
 export function LingoGuessView(props: {
@@ -18,29 +18,34 @@ export function LingoGuessView(props: {
       />
       <table>
         <tbody>
-          {[...Array<number>(props.guesses.maxGuesses())].map((_, i) => (
+          {[...Array<number>(props.guesses.chars.length)].map((_, i) => (
             <tr key={i}>
-              {[...Array<number>(props.guesses.wordLength())].map((_, j) => (
-                <td key={j}>
-                  <div
-                    style={{
-                      boxShadow: "inset 0px 0px 16px rgba(0,0,0,.4)",
-                    }}
-                    className="h-24 w-24 rounded m-1 text-donkerrood text-6xl bg-wit"
-                  >
-                    {props.guesses.getColor(i, j) === Color.CorrectLocation && (
-                      <div className="h-24 w-24 absolute rounded bg-oranje"></div>
-                    )}
-                    {props.guesses.getColor(i, j) ===
-                      Color.IncorrectLocation && (
-                      <div className="h-24 w-24 absolute rounded-full bg-geel"></div>
-                    )}
-                    <div className="h-24 w-24 absolute flex justify-center items-center">
-                      {props.guesses.getLetter(i, j)}
+              {[...Array<number>(props.guesses.targetChars.length)].map(
+                (_, j) => (
+                  <td key={j}>
+                    <div
+                      style={{
+                        boxShadow: "inset 0px 0px 16px rgba(0,0,0,.4)",
+                      }}
+                      className="h-24 w-24 rounded m-1 text-donkerrood text-6xl bg-wit"
+                    >
+                      {props.guesses.colors[i][j] === Color.CorrectLocation && (
+                        <div className="h-24 w-24 absolute rounded bg-oranje"></div>
+                      )}
+                      {props.guesses.colors[i][j] ===
+                        Color.IncorrectLocation && (
+                        <div className="h-24 w-24 absolute rounded-full bg-geel"></div>
+                      )}
+                      <div className="h-24 w-24 absolute flex justify-center items-center">
+                        {props.guesses.currentRow === i &&
+                        props.guesses.currentInput.length > j
+                          ? props.guesses.currentInput[j]
+                          : props.guesses.chars[i][j]}
+                      </div>
                     </div>
-                  </div>
-                </td>
-              ))}
+                  </td>
+                ),
+              )}
             </tr>
           ))}
         </tbody>
