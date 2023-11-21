@@ -73,13 +73,17 @@ export function LingoGuessController() {
           placeholder="Typ nieuw woord..."
           submitButtonText="Start nieuw woord"
           onSubmit={() => {
-            if (newWord.length >= 3) {
-              setGuesses(newGuesses(newWord, maxGuesses));
-              setNewWord("");
-              toast.success("Woord gestart!");
-            } else {
+            if (newWord.length < 3) {
               toast.error("Woord is te kort!");
+              return;
             }
+            if (newWord.length > 8) {
+              toast.error("Woord is te lang!");
+              return;
+            }
+            setGuesses(newGuesses(newWord, maxGuesses));
+            setNewWord("");
+            toast.success("Woord gestart!");
           }}
         />
       </>
