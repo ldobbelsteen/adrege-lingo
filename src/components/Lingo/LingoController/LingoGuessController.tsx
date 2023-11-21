@@ -77,6 +77,8 @@ export function LingoGuessController() {
               setGuesses(newGuesses(newWord, maxGuesses));
               setNewWord("");
               toast.success("Woord gestart!");
+            } else {
+              toast.error("Woord is te kort!");
             }
           }}
         />
