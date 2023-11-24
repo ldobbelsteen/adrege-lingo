@@ -53,7 +53,7 @@ export function toggleGrabbed(card: Card, i: number, j: number): Card {
   const isGrabbed = card.isGrabbed.map((row, rowIndex) =>
     row.map((el, colIndex) => {
       if (i === rowIndex && j == colIndex) {
-        return true;
+        return !el;
       } else {
         return el;
       }
