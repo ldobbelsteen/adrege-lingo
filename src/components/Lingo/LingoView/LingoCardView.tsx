@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, toggleGrabbed } from "../../../utils/card";
+import { Box } from "../../Box";
 import { Title } from "../../Title";
 
 export function LingoCardView(props: {
@@ -8,7 +9,7 @@ export function LingoCardView(props: {
   setCard?: (card: Card) => void;
 }) {
   return (
-    <section>
+    <Box>
       <Title
         text={
           props.isFirstTeamCard === null
@@ -48,6 +49,6 @@ export function LingoCardView(props: {
           ))}
         </tbody>
       </table>
-    </section>
+    </Box>
   );
 }

@@ -8,6 +8,7 @@ import {
   useMaxGuesses,
   useTeamMode,
 } from "../../../utils/storage";
+import { Box } from "../../Box";
 import { Button } from "../../Button";
 import { Checkbox } from "../../Checkbox";
 import { NumberInput } from "../../NumberInput";
@@ -43,7 +44,7 @@ export function LingoSettingsController() {
           Reset hele spel
         </Button>
       </section>
-      <section className={`m-2 p-4 bg-donkerderrood rounded-2xl`}>
+      <Box>
         <Title text="Instellingen" textSize="text-3xl" className="pb-2" />
         <div>
           <span>Teammodus</span>
@@ -78,7 +79,7 @@ export function LingoSettingsController() {
           <span>Maximum aantal pogingen woord raden</span>
           <NumberInput input={maxGuesses} setInput={setMaxGuesses} min={1} />
         </div>
-      </section>
+      </Box>
     </>
   );
 }

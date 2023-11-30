@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export function Elapsed(props: { start: Date }) {
   const [elapsed, setElapsed] = useState(new Date(0));
 
+  const updateElapsed = useCallback(() => {
+    setElapsed(new Date(new Date().getTime() - props.start.getTime()));
+  }, [props.start, setElapsed]);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setElapsed(new Date(new Date().getTime() - props.start.getTime()));
-    }, 1000);
+    updateElapsed();
+  }, [updateElapsed]);
+
+  useEffect(() => {
+    const interval = setInterval(updateElapsed, 1000);
     return () => clearInterval(interval);
-  }, [props.start]);
+  }, [updateElapsed]);
 
   return (
     <span className="m-2 p-2">

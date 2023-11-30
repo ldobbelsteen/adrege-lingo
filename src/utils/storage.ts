@@ -52,8 +52,8 @@ export function useSecondTeamCard() {
   return useStoredState<Card | null>("secondTeamCard", null);
 }
 
-export function useFirstTeamCardSelected() {
-  return useStoredState("firstTeamCardSelected", true);
+export function useFirstTeamSelected() {
+  return useStoredState("firstTeamSelected", true);
 }
 
 export function useGuesses() {
@@ -69,6 +69,67 @@ export function useGuessingStatus() {
     "guessingStatus",
     "running",
   );
+}
+
+export function useFirstTeamPoints() {
+  return useStoredState("firstTeamPoints", 0);
+}
+
+export function useSecondTeamPoints() {
+  return useStoredState("secondTeamPoints", 0);
+}
+
+export function useShowWord() {
+  return useStoredState("showWord", false);
+}
+
+export function useFiveLetterWords() {
+  return useStoredState("fiveLetterWords", [
+    "adten",
+    "corps",
+    "storm",
+    "kater",
+    "kerst",
+    "bezat",
+    "demos",
+    "panda",
+    "knaks",
+    "prela",
+  ]);
+}
+
+export function useSixLetterWords() {
+  return useStoredState("sixLetterWords", [
+    "keizer",
+    "fundum",
+    "taphap",
+    "burger",
+    "redout",
+    "soggen",
+    "zuipen",
+    "tweede",
+    "barfje",
+    "koprol",
+    "sjaars",
+    "nectar",
+    "bakken",
+    "pilsje",
+    "itakru",
+    "consti",
+  ]);
+}
+
+export function useSevenLetterWords() {
+  return useStoredState("sevenLetterWords", [
+    "praeses",
+    "brassen",
+    "lustrum",
+    "alcohol",
+    "knorren",
+    "kwarrel",
+    "dispuut",
+    "sporten",
+  ]);
 }
 
 function useStoredState<T>(
