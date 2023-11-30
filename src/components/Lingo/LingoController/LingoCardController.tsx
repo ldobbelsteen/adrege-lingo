@@ -1,12 +1,13 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { newCard } from "../../../utils/card";
+import { lingoBall } from "../../../utils/sound";
 import {
   useCardDimensions,
   useCardMaxValue,
   useCardPrefilled,
   useFirstTeamCard,
-  useFirstTeamCardSelected,
+  useFirstTeamSelected,
   useSecondTeamCard,
   useTeamMode,
 } from "../../../utils/storage";
@@ -22,19 +23,18 @@ export function LingoCardController() {
 
   const [firstTeamCard, setFirstTeamCard] = useFirstTeamCard();
   const [secondTeamCard, setSecondTeamCard] = useSecondTeamCard();
-  const [firstTeamCardSelected, setFirstTeamCardSelected] =
-    useFirstTeamCardSelected();
+  const [firstTeamSelected, setFirstTeamSelected] = useFirstTeamSelected();
 
-  const card = firstTeamCardSelected ? firstTeamCard : secondTeamCard;
-  const setCard = firstTeamCardSelected ? setFirstTeamCard : setSecondTeamCard;
+  const card = firstTeamSelected ? firstTeamCard : secondTeamCard;
+  const setCard = firstTeamSelected ? setFirstTeamCard : setSecondTeamCard;
 
   return (
     <>
       {teamMode && (
         <div>
           <Multiselect
-            selected={firstTeamCardSelected}
-            setSelected={setFirstTeamCardSelected}
+            selected={firstTeamSelected}
+            setSelected={setFirstTeamSelected}
             options={{
               "Team 1": true,
               "Team 2": false,
@@ -58,12 +58,13 @@ export function LingoCardController() {
             onClick={() => {
               setCard(
                 newCard(
-                  firstTeamCardSelected ? "even" : "uneven",
+                  firstTeamSelected ? "even" : "uneven",
                   cardMaxValue,
                   cardDimensions,
                   cardPrefilled,
                 ),
               );
+              lingoBall.play().catch(toast.error);
               toast.success("Nieuwe kaart aangemaakt!");
             }}
           >
@@ -75,7 +76,7 @@ export function LingoCardController() {
       {card && (
         <LingoCardView
           card={card}
-          isFirstTeamCard={teamMode ? firstTeamCardSelected : null}
+          isFirstTeamCard={teamMode ? firstTeamSelected : null}
           setCard={setCard}
         />
       )}

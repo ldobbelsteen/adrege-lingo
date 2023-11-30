@@ -1,13 +1,15 @@
 import React from "react";
 import { Color, Guesses } from "../../../utils/guesses";
+import { Box } from "../../Box";
 import { Title } from "../../Title";
 
 export function LingoGuessView(props: {
   guesses: Guesses;
   firstTeamGuessing: boolean | null;
+  showTargetWord: boolean;
 }) {
   return (
-    <section>
+    <Box>
       <Title
         text={
           props.firstTeamGuessing === null
@@ -50,6 +52,14 @@ export function LingoGuessView(props: {
           ))}
         </tbody>
       </table>
-    </section>
+      {props.showTargetWord && (
+        <div className="pt-4">
+          <Title
+            text={props.guesses.targetChars.join("")}
+            textSize="text-6xl"
+          />
+        </div>
+      )}
+    </Box>
   );
 }

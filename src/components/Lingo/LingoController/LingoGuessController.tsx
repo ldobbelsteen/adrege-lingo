@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import guessingMusicUrl from "../../../assets/guessing_music.ogg";
 import {
@@ -25,12 +25,18 @@ import {
   useGuesses,
   useMaxGuesses,
   useTeamMode,
+  useShowWord,
+  useFiveLetterWords,
+  useSixLetterWords,
+  useSevenLetterWords,
 } from "../../../utils/storage";
+import { Box } from "../../Box";
 import { Button } from "../../Button";
 import { Elapsed } from "../../Elapsed";
 import { Multiselect } from "../../Multiselect";
 import { Music } from "../../Music";
 import { TextInputWithSubmitButton } from "../../TextInput";
+import { Title } from "../../Title";
 import { LingoGuessView } from "../LingoView/LingoGuessView";
 
 export function LingoGuessController() {
@@ -40,6 +46,18 @@ export function LingoGuessController() {
 
   const [guesses, setGuesses] = useGuesses();
   const [firstTeamGuessing, setFirstTeamGuessing] = useFirstTeamGuessing();
+
+  const [fiveLetterWords, setFiveLetterWords] = useFiveLetterWords();
+  const [sixLetterWords, setSixLetterWords] = useSixLetterWords();
+  const [sevenLetterWords, setSevenLetterWords] = useSevenLetterWords();
+
+  const startWord = useCallback(
+    (word: string) => {
+      setGuesses(newGuesses(word, maxGuesses));
+      toast.success("Woord gestart!");
+    },
+    [maxGuesses, setGuesses],
+  );
 
   if (guesses) {
     return (
@@ -66,29 +84,77 @@ export function LingoGuessController() {
             />
           </div>
         )}
-        <TextInputWithSubmitButton
-          autoFocus
-          input={newWord}
-          setInput={setNewWord}
-          placeholder="Typ nieuw woord..."
-          submitButtonText="Start nieuw woord"
-          onSubmit={() => {
-            if (newWord.length < 3) {
-              toast.error("Woord is te kort!");
-              return;
-            }
-            if (newWord.length > 8) {
-              toast.error("Woord is te lang!");
-              return;
-            }
-            setGuesses(newGuesses(newWord, maxGuesses));
-            setNewWord("");
-            toast.success("Woord gestart!");
-          }}
-        />
+        <Box>
+          <Title text="Eigen woord" textSize="text-2xl" />
+          <TextInputWithSubmitButton
+            autoFocus
+            input={newWord}
+            setInput={setNewWord}
+            placeholder="Typ woord..."
+            submitButtonText="Start"
+            onSubmit={() => {
+              if (newWord.length < 3) {
+                toast.error("Woord is te kort!");
+                return;
+              }
+              if (newWord.length > 8) {
+                toast.error("Woord is te lang!");
+                return;
+              }
+              startWord(newWord);
+              setNewWord("");
+            }}
+          />
+        </Box>
+        <Box>
+          <Title text="Woordlijsten" textSize="text-2xl" />
+          <div className="flex gap-4">
+            <WordSelectColumn
+              title="Vijf letters"
+              words={fiveLetterWords}
+              selectWord={(w) => {
+                setFiveLetterWords(fiveLetterWords.filter((v) => v !== w));
+                startWord(w);
+              }}
+            />
+            <WordSelectColumn
+              title="Zes letters"
+              words={sixLetterWords}
+              selectWord={(w) => {
+                setSixLetterWords(sixLetterWords.filter((v) => v !== w));
+                startWord(w);
+              }}
+            />
+            <WordSelectColumn
+              title="Zeven letters"
+              words={sevenLetterWords}
+              selectWord={(w) => {
+                setSevenLetterWords(sevenLetterWords.filter((v) => v !== w));
+                startWord(w);
+              }}
+            />
+          </div>
+        </Box>
       </>
     );
   }
+}
+
+function WordSelectColumn(props: {
+  title: string;
+  words: string[];
+  selectWord: (w: string) => void;
+}) {
+  return (
+    <div className="flex flex-col">
+      <Title text={props.title} textSize="text-xl" />
+      {props.words.map((w, i) => (
+        <Button key={i} onClick={() => props.selectWord(w)}>
+          {w}
+        </Button>
+      ))}
+    </div>
+  );
 }
 
 function LingoGuessInstance(props: {
@@ -103,6 +169,11 @@ function LingoGuessInstance(props: {
     i: -1,
     j: props.guesses.targetChars.length + 1,
   });
+  const [showWord, setShowWord] = useShowWord();
+
+  useEffect(() => {
+    setShowWord(false);
+  }, [status, setShowWord]);
 
   useEffect(() => {
     if (status === "running") {
@@ -142,6 +213,7 @@ function LingoGuessInstance(props: {
             setStatus("paused");
           }
         } else if (status === "running") {
+          setStartTime(new Date());
           props.setGuesses(prefillDiscovered(props.guesses));
         }
       }
@@ -158,6 +230,7 @@ function LingoGuessInstance(props: {
         <Button
           onClick={() => {
             props.setGuesses(null);
+            setShowWord(false);
             toast.error("Woord verwijderd!");
           }}
         >
@@ -211,8 +284,13 @@ function LingoGuessInstance(props: {
                 setStatus("running");
               }}
             >
-              Beurt naar andere team (met bonusletter)
+              Beurtwissel (met bonusletter)
             </Button>
+            {!showWord && (
+              <Button onClick={() => setShowWord(true)}>
+                Toon juiste woord
+              </Button>
+            )}
           </>
         )}
       </div>
@@ -237,6 +315,7 @@ function LingoGuessInstance(props: {
       <LingoGuessView
         guesses={props.guesses}
         firstTeamGuessing={props.firstTeamGuessing}
+        showTargetWord={showWord}
       />
     </>
   );

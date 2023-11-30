@@ -1,5 +1,4 @@
 ## TODO (op volgorde)
-- Goede woord laten zien knop
 - Goed geraden woord -> flikker animatie
 - Animatie nieuwe kaart -> vallende ballen, gegeven ballen plingetjes
 - Nieuwe rij door beurtwissel schuifanimatie

@@ -6,6 +6,7 @@ import { Title } from "../../Title";
 import { Screen } from "../index";
 import { LingoCardController } from "./LingoCardController";
 import { LingoGuessController } from "./LingoGuessController";
+import { LingoPointController } from "./LingoPointController";
 import { LingoSettingsController } from "./LingoSettingsController";
 
 export const LingoController = () => {
@@ -21,6 +22,9 @@ export const LingoController = () => {
       }
       case Screen.Cards: {
         return <LingoCardController />;
+      }
+      case Screen.Points: {
+        return <LingoPointController />;
       }
     }
   }, [screen]);
