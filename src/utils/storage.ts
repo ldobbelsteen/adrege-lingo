@@ -5,10 +5,12 @@ import {
   useEffect,
   useState,
 } from "react";
+import normalWords from "../assets/normale-woorden.json";
+import stukoWords from "../assets/stuko-woorden.json";
 import { Screen } from "../components/Lingo";
-
 import { Card } from "./card";
 import { Guesses } from "./guesses";
+import { sortedArray } from "./misc";
 
 declare global {
   interface GlobalEventHandlersEventMap {
@@ -83,53 +85,20 @@ export function useShowWord() {
   return useStoredState("showWord", false);
 }
 
-export function useFiveLetterWords() {
-  return useStoredState("fiveLetterWords", [
-    "adten",
-    "corps",
-    "storm",
-    "kater",
-    "kerst",
-    "bezat",
-    "demos",
-    "panda",
-    "knaks",
-    "prela",
-  ]);
+export function useStukoWords() {
+  const state: { [category: string]: string[] } = {};
+  for (const [category, words] of Object.entries(stukoWords)) {
+    state[category] = sortedArray(words);
+  }
+  return useStoredState("stukoWords", state);
 }
 
-export function useSixLetterWords() {
-  return useStoredState("sixLetterWords", [
-    "keizer",
-    "fundum",
-    "taphap",
-    "burger",
-    "redout",
-    "soggen",
-    "zuipen",
-    "tweede",
-    "barfje",
-    "koprol",
-    "sjaars",
-    "nectar",
-    "bakken",
-    "pilsje",
-    "itakru",
-    "consti",
-  ]);
-}
-
-export function useSevenLetterWords() {
-  return useStoredState("sevenLetterWords", [
-    "praeses",
-    "brassen",
-    "lustrum",
-    "alcohol",
-    "knorren",
-    "kwarrel",
-    "dispuut",
-    "sporten",
-  ]);
+export function useNormalWords() {
+  const state: { [category: string]: string[] } = {};
+  for (const [category, words] of Object.entries(normalWords)) {
+    state[category] = sortedArray(words);
+  }
+  return useStoredState("normalWords", state);
 }
 
 function useStoredState<T>(

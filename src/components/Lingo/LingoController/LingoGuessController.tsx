@@ -14,6 +14,7 @@ import {
   submitInput,
   withInput,
 } from "../../../utils/guesses";
+import { randomPosInt } from "../../../utils/misc";
 import {
   guessCorrect,
   guessOutOfTries,
@@ -26,9 +27,8 @@ import {
   useMaxGuesses,
   useTeamMode,
   useShowWord,
-  useFiveLetterWords,
-  useSixLetterWords,
-  useSevenLetterWords,
+  useNormalWords,
+  useStukoWords,
 } from "../../../utils/storage";
 import { Box } from "../../Box";
 import { Button } from "../../Button";
@@ -47,9 +47,8 @@ export function LingoGuessController() {
   const [guesses, setGuesses] = useGuesses();
   const [firstTeamGuessing, setFirstTeamGuessing] = useFirstTeamGuessing();
 
-  const [fiveLetterWords, setFiveLetterWords] = useFiveLetterWords();
-  const [sixLetterWords, setSixLetterWords] = useSixLetterWords();
-  const [sevenLetterWords, setSevenLetterWords] = useSevenLetterWords();
+  const [normalWords, setNormalWords] = useNormalWords();
+  const [stukoWords, setStukoWords] = useStukoWords();
 
   const startWord = useCallback(
     (word: string) => {
@@ -84,55 +83,71 @@ export function LingoGuessController() {
             />
           </div>
         )}
+        <div className="flex">
+          <Box>
+            <Title text="Eigen woord" textSize="text-2xl" />
+            <TextInputWithSubmitButton
+              autoFocus
+              input={newWord}
+              setInput={setNewWord}
+              placeholder="Typ woord..."
+              submitButtonText="Start"
+              onSubmit={() => {
+                if (newWord.length < 3) {
+                  toast.error("Woord is te kort!");
+                  return;
+                }
+                if (newWord.length > 8) {
+                  toast.error("Woord is te lang!");
+                  return;
+                }
+                startWord(newWord);
+                setNewWord("");
+              }}
+            />
+          </Box>
+          <Box>
+            <Title text="Random normale woorden" textSize="text-2xl" />
+            {Object.entries(normalWords).map(
+              ([category, words]) =>
+                words.length > 0 && (
+                  <Button
+                    key={category}
+                    onClick={() => {
+                      const w = words[randomPosInt(words.length)];
+                      setNormalWords({
+                        ...normalWords,
+                        [category]: words.filter((v) => v !== w),
+                      });
+                      startWord(w);
+                    }}
+                  >
+                    {category}
+                  </Button>
+                ),
+            )}
+          </Box>
+        </div>
         <Box>
-          <Title text="Eigen woord" textSize="text-2xl" />
-          <TextInputWithSubmitButton
-            autoFocus
-            input={newWord}
-            setInput={setNewWord}
-            placeholder="Typ woord..."
-            submitButtonText="Start"
-            onSubmit={() => {
-              if (newWord.length < 3) {
-                toast.error("Woord is te kort!");
-                return;
-              }
-              if (newWord.length > 8) {
-                toast.error("Woord is te lang!");
-                return;
-              }
-              startWord(newWord);
-              setNewWord("");
-            }}
-          />
-        </Box>
-        <Box>
-          <Title text="Woordlijsten" textSize="text-2xl" />
+          <Title text="Stuko woorden" textSize="text-2xl" />
           <div className="flex gap-4">
-            <WordSelectColumn
-              title="Vijf letters"
-              words={fiveLetterWords}
-              selectWord={(w) => {
-                setFiveLetterWords(fiveLetterWords.filter((v) => v !== w));
-                startWord(w);
-              }}
-            />
-            <WordSelectColumn
-              title="Zes letters"
-              words={sixLetterWords}
-              selectWord={(w) => {
-                setSixLetterWords(sixLetterWords.filter((v) => v !== w));
-                startWord(w);
-              }}
-            />
-            <WordSelectColumn
-              title="Zeven letters"
-              words={sevenLetterWords}
-              selectWord={(w) => {
-                setSevenLetterWords(sevenLetterWords.filter((v) => v !== w));
-                startWord(w);
-              }}
-            />
+            {Object.entries(stukoWords).map(
+              ([category, words]) =>
+                words.length > 0 && (
+                  <WordSelectColumn
+                    key={category}
+                    title={category}
+                    words={words}
+                    selectWord={(w) => {
+                      setStukoWords({
+                        ...stukoWords,
+                        [category]: words.filter((v) => v !== w),
+                      });
+                      startWord(w);
+                    }}
+                  />
+                ),
+            )}
           </div>
         </Box>
       </>
