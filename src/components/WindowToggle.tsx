@@ -11,8 +11,8 @@ export const WindowToggle = (props: { url: string; windowName: string }) => {
       }
 
       const features = `
-        width=${0.9 * window.innerWidth},
-        height=${0.9 * window.innerHeight}
+        width=${(0.9 * window.innerWidth).toString()},
+        height=${(0.9 * window.innerHeight).toString()}
       `;
 
       const newInstance = window.open(props.url, undefined, features);

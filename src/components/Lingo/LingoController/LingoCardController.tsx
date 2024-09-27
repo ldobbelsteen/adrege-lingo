@@ -64,7 +64,9 @@ export function LingoCardController() {
                   cardPrefilled,
                 ),
               );
-              lingoBall.play().catch(toast.error);
+              lingoBall.play().catch((e: unknown) => {
+                console.error(e);
+              });
               toast.success("Nieuwe kaart aangemaakt!");
             }}
           >

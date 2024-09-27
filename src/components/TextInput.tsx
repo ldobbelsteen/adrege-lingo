@@ -13,7 +13,9 @@ export function TextInput(props: {
       value={props.input}
       autoFocus={props.autoFocus}
       placeholder={props.placeholder}
-      onChange={(ev) => props.setInput(ev.target.value)}
+      onChange={(ev) => {
+        props.setInput(ev.target.value);
+      }}
       className="text-donkerderrood rounded p-2 m-2"
     />
   );

@@ -12,9 +12,15 @@ export function Button(props: {
     <button
       type="button"
       onClick={props.onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseDown={() => setPressed(true)}
-      onMouseUp={() => setPressed(false)}
+      onMouseEnter={() => {
+        setHover(true);
+      }}
+      onMouseDown={() => {
+        setPressed(true);
+      }}
+      onMouseUp={() => {
+        setPressed(false);
+      }}
       onMouseLeave={() => {
         setPressed(false);
         setHover(false);

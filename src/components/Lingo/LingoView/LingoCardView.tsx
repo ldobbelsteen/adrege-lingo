@@ -26,10 +26,11 @@ export function LingoCardView(props: {
                 <td key={j}>
                   <button
                     type="button"
-                    onClick={() =>
-                      props.setCard &&
-                      props.setCard(toggleGrabbed(props.card, i, j))
-                    }
+                    onClick={() => {
+                      if (props.setCard !== undefined) {
+                        props.setCard(toggleGrabbed(props.card, i, j));
+                      }
+                    }}
                     style={{
                       boxShadow: "inset -25px -15px 40px rgba(0,0,0,.3)",
                     }}

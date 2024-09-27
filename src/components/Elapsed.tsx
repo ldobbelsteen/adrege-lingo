@@ -13,7 +13,9 @@ export function Elapsed(props: { start: Date }) {
 
   useEffect(() => {
     const interval = setInterval(updateElapsed, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [updateElapsed]);
 
   return (

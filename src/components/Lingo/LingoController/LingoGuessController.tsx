@@ -64,7 +64,9 @@ export function LingoGuessController() {
         guesses={guesses}
         setGuesses={setGuesses}
         firstTeamGuessing={teamMode ? firstTeamGuessing : null}
-        toggleTeamGuessing={() => setFirstTeamGuessing(!firstTeamGuessing)}
+        toggleTeamGuessing={() => {
+          setFirstTeamGuessing(!firstTeamGuessing);
+        }}
       />
     );
   } else {
@@ -164,7 +166,12 @@ function WordSelectColumn(props: {
     <div className="flex flex-col">
       <Title text={props.title} textSize="text-xl" />
       {props.words.map((w, i) => (
-        <Button key={i} onClick={() => props.selectWord(w)}>
+        <Button
+          key={i}
+          onClick={() => {
+            props.selectWord(w);
+          }}
+        >
           {w}
         </Button>
       ))}
@@ -219,12 +226,16 @@ function LingoGuessInstance(props: {
       } else if (colorIndex.j === props.guesses.targetChars.length) {
         if (isCorrect(props.guesses)) {
           if (status === "running") {
-            guessCorrect.play().catch(toast.error);
+            guessCorrect.play().catch((e: unknown) => {
+              console.error(e);
+            });
             setStatus("finished");
           }
         } else if (isOutOfTries(props.guesses)) {
           if (status === "running") {
-            guessOutOfTries.play().catch(toast.error);
+            guessOutOfTries.play().catch((e: unknown) => {
+              console.error(e);
+            });
             setStatus("paused");
           }
         } else if (status === "running") {
@@ -234,7 +245,9 @@ function LingoGuessInstance(props: {
       }
       setColorIndex({ ...colorIndex, j: colorIndex.j + 1 });
     }, 200);
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [colorIndex, props, setStatus, status]);
 
   return (
@@ -258,7 +271,9 @@ function LingoGuessInstance(props: {
             <Button
               onClick={() => {
                 setStatus("paused");
-                guessTimeout.play().catch(toast.error);
+                guessTimeout.play().catch((e: unknown) => {
+                  console.error(e);
+                });
                 toast.error("Tijd voorbij!");
               }}
             >
@@ -302,7 +317,11 @@ function LingoGuessInstance(props: {
               Beurtwissel (met bonusletter)
             </Button>
             {!showWord && (
-              <Button onClick={() => setShowWord(true)}>
+              <Button
+                onClick={() => {
+                  setShowWord(true);
+                }}
+              >
                 Toon juiste woord
               </Button>
             )}
@@ -321,9 +340,7 @@ function LingoGuessInstance(props: {
         placeholder="Typ poging..."
         submitButtonText="Poging insturen"
         onSubmit={() => {
-          if (props.guesses) {
-            props.setGuesses(submitInput(props.guesses));
-          }
+          props.setGuesses(submitInput(props.guesses));
         }}
       />
 
