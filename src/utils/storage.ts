@@ -1,6 +1,6 @@
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -8,8 +8,8 @@ import {
 import normalWords from "../assets/normale-woorden.json";
 import stukoWords from "../assets/stuko-woorden.json";
 import { Screen } from "../components/Lingo";
-import { Card } from "./card";
-import { Guesses } from "./guesses";
+import type { Card } from "./card";
+import type { Guesses } from "./guesses";
 import { sortedArray } from "./misc";
 
 declare global {
@@ -161,7 +161,7 @@ function useStoredState<T>(
         return newValue;
       });
     },
-    [stateKey, setState, setStorage],
+    [stateKey, setStorage],
   );
 
   return [state, setStateWrapper];

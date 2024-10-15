@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function Elapsed(props: { start: Date }) {
   const [elapsed, setElapsed] = useState(new Date(0));
 
   const updateElapsed = useCallback(() => {
     setElapsed(new Date(new Date().getTime() - props.start.getTime()));
-  }, [props.start, setElapsed]);
+  }, [props.start]);
 
   useEffect(() => {
     updateElapsed();

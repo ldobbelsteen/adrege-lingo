@@ -51,11 +51,10 @@ export function newCard(
 export function toggleGrabbed(card: Card, i: number, j: number): Card {
   const isGrabbed = card.isGrabbed.map((row, rowIndex) =>
     row.map((el, colIndex) => {
-      if (i === rowIndex && j == colIndex) {
+      if (i === rowIndex && j === colIndex) {
         return !el;
-      } else {
-        return el;
       }
+      return el;
     }),
   );
   const result = { ...card, isGrabbed };
@@ -131,9 +130,8 @@ function isOnDiagonal(
 ): boolean {
   if (rising) {
     return j === card.dimensions - 1 - i;
-  } else {
-    return i === j;
   }
+  return i === j;
 }
 
 function updateFavorites(card: Card): Card {

@@ -1,4 +1,3 @@
-import React from "react";
 import { letterCorrectLocation } from "../../../utils/sound";
 import {
   useFirstTeamGuessing,

@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Toaster } from "react-hot-toast";
+import { useMemo } from "react";
+import { ToastContainer } from "react-toastify";
 import { useScreen } from "../../../utils/storage";
 import { Multiselect } from "../../Multiselect";
 import { Title } from "../../Title";
@@ -8,11 +8,12 @@ import { LingoCardController } from "./LingoCardController";
 import { LingoGuessController } from "./LingoGuessController";
 import { LingoPointController } from "./LingoPointController";
 import { LingoSettingsController } from "./LingoSettingsController";
+import "react-toastify/dist/ReactToastify.css";
 
 export const LingoController = () => {
   const [screen, setScreen] = useScreen();
 
-  const component = useMemo((): React.JSX.Element => {
+  const component = useMemo((): JSX.Element => {
     switch (screen) {
       case Screen.Settings: {
         return <LingoSettingsController />;
@@ -31,9 +32,8 @@ export const LingoController = () => {
 
   return (
     <main
-      className={`w-full min-h-full text-center text-wit text-xl bg-donkerrood`}
+      className={"w-full min-h-full text-center text-wit text-xl bg-donkerrood"}
     >
-      <Toaster position="top-right" />
       <div className="flex justify-center items-center bg-donkerderrood p-2">
         <Title
           text="Lingo controlepaneel"
@@ -44,10 +44,7 @@ export const LingoController = () => {
           selected={screen}
           setSelected={setScreen}
           options={Object.values(Screen).reduce(
-            (acc, scr) => ({
-              ...acc,
-              [scr]: scr,
-            }),
+            (acc, scr) => Object.assign(acc, { [scr]: scr }),
             {},
           )}
         />
@@ -55,6 +52,7 @@ export const LingoController = () => {
       <div className="flex flex-col justify-center items-center p-2 gap-1">
         {component}
       </div>
+      <ToastContainer position="top-right" />
     </main>
   );
 };
