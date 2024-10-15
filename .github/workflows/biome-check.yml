@@ -1,0 +1,18 @@
+name: Biome check
+on: push
+
+jobs:
+  check:
+    name: Check Biome
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone the repository
+        id: repository-checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+
+      - name: Run Biome check
+        run: biome ci .
