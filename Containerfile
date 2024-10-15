@@ -3,6 +3,7 @@ WORKDIR /build
 COPY package*.json ./
 RUN npm ci
 COPY . .
+RUN npm run check
 RUN npm run build
 
 FROM docker.io/library/nginx:1.27-alpine
