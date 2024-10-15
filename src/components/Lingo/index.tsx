@@ -1,4 +1,3 @@
-import React from "react";
 import { LingoController } from "./LingoController/index";
 import { LingoView } from "./LingoView/index";
 

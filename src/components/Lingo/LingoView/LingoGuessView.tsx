@@ -1,4 +1,3 @@
-import React from "react";
 import { Color, type Guesses } from "../../../utils/guesses";
 import { Box } from "../../Box";
 import { Title } from "../../Title";

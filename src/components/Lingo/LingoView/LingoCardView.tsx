@@ -1,4 +1,3 @@
-import React from "react";
 import { type Card, toggleGrabbed } from "../../../utils/card";
 import { Box } from "../../Box";
 import { Title } from "../../Title";

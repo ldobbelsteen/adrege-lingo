@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function Elapsed(props: { start: Date }) {
   const [elapsed, setElapsed] = useState(new Date(0));

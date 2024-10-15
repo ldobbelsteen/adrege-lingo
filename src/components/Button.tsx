@@ -1,8 +1,8 @@
-import type React from "react";
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 export function Button(props: {
-  children: React.ReactNode;
+  children: ReactNode;
   onClick: () => void;
   pressed?: boolean;
 }) {

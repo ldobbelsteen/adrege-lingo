@@ -1,5 +1,3 @@
-import React from "react";
-
 export function NumberInput(props: {
   input: number;
   setInput: (input: number) => void;

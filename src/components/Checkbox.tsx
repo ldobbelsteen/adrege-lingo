@@ -1,5 +1,3 @@
-import React from "react";
-
 export function Checkbox(props: {
   checked: boolean;
   setChecked: (checked: boolean) => void;

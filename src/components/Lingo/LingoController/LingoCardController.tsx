@@ -1,4 +1,3 @@
-import React from "react";
 import toast from "react-hot-toast";
 import { newCard } from "../../../utils/card";
 import { lingoBall } from "../../../utils/sound";

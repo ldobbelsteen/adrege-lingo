@@ -1,6 +1,6 @@
-import type React from "react";
+import type { ReactNode } from "react";
 
-export function Box(props: { children: React.ReactNode }) {
+export function Box(props: { children: ReactNode }) {
   return (
     <div className={"m-2 p-4 bg-donkerishrood rounded-2xl"}>
       {props.children}

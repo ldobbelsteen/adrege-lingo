@@ -1,17 +1,14 @@
 {
   "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
     "allowJs": true,
-    "esModuleInterop": true,
-    "jsx": "preserve",
-    "lib": ["dom", "esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "outDir": "out",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "strict": true,
-    "target": "esnext",
-    "types": ["vite/client"]
+    "skipLibCheck": true
   },
   "include": ["*.js", "src/**/*.ts", "src/**/*.tsx"]
 }

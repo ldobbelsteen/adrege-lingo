@@ -1,4 +1,3 @@
-import React from "react";
 import logoUrl from "../../../assets/favicon.svg";
 import { Box } from "../../Box";
 import { Title } from "../../Title";

@@ -1,4 +1,3 @@
-import type React from "react";
 import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { useScreen } from "../../../utils/storage";
@@ -13,7 +12,7 @@ import { LingoSettingsController } from "./LingoSettingsController";
 export const LingoController = () => {
   const [screen, setScreen] = useScreen();
 
-  const component = useMemo((): React.JSX.Element => {
+  const component = useMemo((): JSX.Element => {
     switch (screen) {
       case Screen.Settings: {
         return <LingoSettingsController />;
