@@ -5,7 +5,7 @@ export function Elapsed(props: { start: Date }) {
 
   const updateElapsed = useCallback(() => {
     setElapsed(new Date(new Date().getTime() - props.start.getTime()));
-  }, [props.start, setElapsed]);
+  }, [props.start]);
 
   useEffect(() => {
     updateElapsed();

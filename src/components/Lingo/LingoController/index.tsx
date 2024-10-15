@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo } from "react";
 import { Toaster } from "react-hot-toast";
 import { useScreen } from "../../../utils/storage";
 import { Multiselect } from "../../Multiselect";
@@ -31,7 +32,7 @@ export const LingoController = () => {
 
   return (
     <main
-      className={`w-full min-h-full text-center text-wit text-xl bg-donkerrood`}
+      className={"w-full min-h-full text-center text-wit text-xl bg-donkerrood"}
     >
       <Toaster position="top-right" />
       <div className="flex justify-center items-center bg-donkerderrood p-2">
@@ -44,10 +45,7 @@ export const LingoController = () => {
           selected={screen}
           setSelected={setScreen}
           options={Object.values(Screen).reduce(
-            (acc, scr) => ({
-              ...acc,
-              [scr]: scr,
-            }),
+            (acc, scr) => Object.assign(acc, { [scr]: scr }),
             {},
           )}
         />

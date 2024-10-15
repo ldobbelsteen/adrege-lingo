@@ -1,15 +1,16 @@
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo } from "react";
 import {
   useFirstTeamCard,
-  useFirstTeamSelected,
   useFirstTeamGuessing,
   useFirstTeamPoints,
+  useFirstTeamSelected,
   useGuesses,
   useScreen,
   useSecondTeamCard,
   useSecondTeamPoints,
-  useTeamMode,
   useShowWord,
+  useTeamMode,
 } from "../../../utils/storage";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
@@ -67,13 +68,13 @@ export const LingoView = () => {
               secondTeamPoints={secondTeamPoints}
             />
           );
-        } else {
-          return (
-            <LingoPointView
-              points={firstTeamSelected ? firstTeamPoints : secondTeamPoints}
-            />
-          );
         }
+
+        return (
+          <LingoPointView
+            points={firstTeamSelected ? firstTeamPoints : secondTeamPoints}
+          />
+        );
       }
     }
     return <LingoStartView />;

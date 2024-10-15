@@ -7,10 +7,10 @@ import {
 } from "./sound";
 
 export enum Color {
-  CorrectLocation,
-  IncorrectLocation,
-  Incorrect,
-  None,
+  CorrectLocation = 0,
+  IncorrectLocation = 1,
+  Incorrect = 2,
+  None = 3,
 }
 
 export interface Guesses {
@@ -64,16 +64,14 @@ export function submitInput(guesses: Guesses): Guesses {
       if (char !== ".") return char;
       if (guesses.currentInput[i] === guesses.targetChars[i]) {
         return guesses.targetChars[i];
-      } else {
-        return ".";
       }
+      return ".";
     }),
     chars: guesses.chars.map((row, rowIndex) => {
       if (rowIndex === guesses.currentRow) {
         return guesses.currentInput;
-      } else {
-        return row;
       }
+      return row;
     }),
     currentRow: guesses.currentRow + 1,
     currentInput: [],
@@ -121,9 +119,8 @@ export function addColor(guesses: Guesses, i: number, j: number): Guesses {
         row.map((el, colIndex) => {
           if (i === rowIndex && j === colIndex) {
             return Color.CorrectLocation;
-          } else {
-            return el;
           }
+          return el;
         }),
       ),
     };
@@ -169,9 +166,8 @@ export function addColor(guesses: Guesses, i: number, j: number): Guesses {
         row.map((el, colIndex) => {
           if (i === rowIndex && j === colIndex) {
             return Color.IncorrectLocation;
-          } else {
-            return el;
           }
+          return el;
         }),
       ),
     };
@@ -186,9 +182,8 @@ export function addColor(guesses: Guesses, i: number, j: number): Guesses {
       row.map((el, colIndex) => {
         if (i === rowIndex && j === colIndex) {
           return Color.Incorrect;
-        } else {
-          return el;
         }
+        return el;
       }),
     ),
   };
@@ -201,9 +196,8 @@ export function prefillDiscovered(guesses: Guesses): Guesses {
       row.map((el, colIndex) => {
         if (rowIndex === guesses.currentRow) {
           return guesses.discoveredChars[colIndex];
-        } else {
-          return el;
         }
+        return el;
       }),
     ),
   };
@@ -236,7 +230,7 @@ function wordToChars(word: string) {
     if (
       i < rawChars.length - 1 &&
       rawChars[i] === "I" &&
-      rawChars[i + 1] == "J"
+      rawChars[i + 1] === "J"
     ) {
       chars.push("IJ");
       i += 1;

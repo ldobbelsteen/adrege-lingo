@@ -7,7 +7,7 @@ export function LingoStartView() {
   return (
     <Box>
       <div className="flex items-center justify-center">
-        <img src={logoUrl} className="h-20 m-2"></img>
+        <img src={logoUrl} className="h-20 m-2" alt="Logo" />
         <Title text="Adregé Lingo" textSize="text-6xl" />
       </div>
     </Box>

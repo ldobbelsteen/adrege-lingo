@@ -21,5 +21,6 @@ export function Music(props: { src: string; playing: boolean }) {
     }
   }, [props.playing, play, pause]);
 
+  // biome-ignore lint/a11y/useMediaCaption: <explanation>
   return <audio loop ref={audioRef} src={props.src} />;
 }

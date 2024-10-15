@@ -63,7 +63,7 @@ export function LingoSettingsController() {
           <NumberInput
             input={cardMaxValue}
             setInput={setCardMaxValue}
-            min={2 * Math.pow(cardDimensions, 2)}
+            min={2 * cardDimensions ** 2}
           />
         </div>
         <div>
@@ -72,7 +72,7 @@ export function LingoSettingsController() {
             input={cardPrefilled}
             setInput={setCardPrefilled}
             min={0}
-            max={Math.pow(cardDimensions, 2)}
+            max={cardDimensions ** 2}
           />
         </div>
         <div>
