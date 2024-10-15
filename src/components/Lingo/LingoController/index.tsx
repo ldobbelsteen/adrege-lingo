@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
 import { useScreen } from "../../../utils/storage";
 import { Multiselect } from "../../Multiselect";
 import { Title } from "../../Title";
@@ -8,6 +8,7 @@ import { LingoCardController } from "./LingoCardController";
 import { LingoGuessController } from "./LingoGuessController";
 import { LingoPointController } from "./LingoPointController";
 import { LingoSettingsController } from "./LingoSettingsController";
+import "react-toastify/dist/ReactToastify.css";
 
 export const LingoController = () => {
   const [screen, setScreen] = useScreen();
@@ -33,7 +34,6 @@ export const LingoController = () => {
     <main
       className={"w-full min-h-full text-center text-wit text-xl bg-donkerrood"}
     >
-      <Toaster position="top-right" />
       <div className="flex justify-center items-center bg-donkerderrood p-2">
         <Title
           text="Lingo controlepaneel"
@@ -52,6 +52,7 @@ export const LingoController = () => {
       <div className="flex flex-col justify-center items-center p-2 gap-1">
         {component}
       </div>
+      <ToastContainer position="top-right" />
     </main>
   );
 };

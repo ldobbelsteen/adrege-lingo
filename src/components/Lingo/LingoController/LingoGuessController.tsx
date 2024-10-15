@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import guessingMusicUrl from "../../../assets/guessing_music.ogg";
 import {
   type Guesses,

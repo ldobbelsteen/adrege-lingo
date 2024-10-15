@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { fillArray } from "./misc";
 import {
   letterCorrectLocation,
