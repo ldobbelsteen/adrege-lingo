@@ -9,7 +9,7 @@ export function Checkbox(props: {
       onChange={() => {
         props.setChecked(!props.checked);
       }}
-      className="w-6 h-6 p-2 m-2"
+      className="w-6 h-6 p-2 m-2 shadow"
     />
   );
 }

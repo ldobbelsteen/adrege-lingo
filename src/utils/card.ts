@@ -92,16 +92,6 @@ function countGrabbedCol(card: Card, j: number) {
   return count;
 }
 
-function countGrabbedDiagonal(card: Card, rising: boolean) {
-  let count = 0;
-  for (let i = 0; i < card.dimensions; i++) {
-    if (card.isGrabbed[rising ? card.dimensions - 1 - i : i][i]) {
-      count += 1;
-    }
-  }
-  return count;
-}
-
 function hasLingo(card: Card): boolean {
   for (let i = 0; i < card.dimensions; i++) {
     if (countGrabbedRow(card, i) === card.dimensions) {
@@ -113,25 +103,7 @@ function hasLingo(card: Card): boolean {
       return true;
     }
   }
-  if (countGrabbedDiagonal(card, true) === card.dimensions) {
-    return true;
-  }
-  if (countGrabbedDiagonal(card, false) === card.dimensions) {
-    return true;
-  }
   return false;
-}
-
-function isOnDiagonal(
-  card: Card,
-  rising: boolean,
-  i: number,
-  j: number,
-): boolean {
-  if (rising) {
-    return j === card.dimensions - 1 - i;
-  }
-  return i === j;
 }
 
 function updateFavorites(card: Card): Card {
@@ -141,11 +113,7 @@ function updateFavorites(card: Card): Card {
       isFavorite[i][j] =
         !card.isGrabbed[i][j] &&
         (countGrabbedRow(card, i) === card.dimensions - 1 ||
-          countGrabbedCol(card, j) === card.dimensions - 1 ||
-          (isOnDiagonal(card, true, i, j) &&
-            countGrabbedDiagonal(card, true) === card.dimensions - 1) ||
-          (isOnDiagonal(card, false, i, j) &&
-            countGrabbedDiagonal(card, false) === card.dimensions - 1));
+          countGrabbedCol(card, j) === card.dimensions - 1);
     }
   }
   return { ...card, isFavorite };

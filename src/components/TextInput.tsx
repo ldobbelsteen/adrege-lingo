@@ -1,4 +1,5 @@
 import { Button } from "./Button";
+import { innerShadow } from "./Lingo";
 
 export function TextInput(props: {
   input: string;
@@ -13,7 +14,8 @@ export function TextInput(props: {
       onChange={(ev) => {
         props.setInput(ev.target.value);
       }}
-      className="text-donkerderrood rounded p-2 m-2"
+      className="shadow text-donkerderrood rounded p-2 m-2"
+      style={{ boxShadow: innerShadow }}
     />
   );
 }

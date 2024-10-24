@@ -33,13 +33,7 @@ export function LingoCardView(props: {
                     style={{
                       boxShadow: "inset -25px -15px 40px rgba(0,0,0,.3)",
                     }}
-                    className={`h-24 w-24 m-1 rounded-full flex justify-center items-center text-6xl ${
-                      props.card.isGrabbed[i][j] ? "bg-geel" : "bg-wit"
-                    } ${
-                      props.card.isFavorite[i][j]
-                        ? "text-zwart"
-                        : "text-donkerrood"
-                    }`}
+                    className={`h-24 w-24 m-1 rounded-full flex justify-center items-center text-6xl text-donkerrood ${props.card.isGrabbed[i][j] ? "bg-geel" : props.card.isFavorite[i][j] ? "bg-oranje" : "bg-wit"}`}
                   >
                     {!props.card.isGrabbed[i][j] && props.card.values[i][j]}
                   </button>

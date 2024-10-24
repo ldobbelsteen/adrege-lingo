@@ -52,7 +52,7 @@ export const LingoController = () => {
       <div className="flex flex-col justify-center items-center p-2 gap-1">
         {component}
       </div>
-      <ToastContainer position="top-right" />
+      <ToastContainer position="bottom-right" />
     </main>
   );
 };

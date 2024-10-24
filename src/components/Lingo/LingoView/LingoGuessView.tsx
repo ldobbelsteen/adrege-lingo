@@ -1,3 +1,4 @@
+import { innerShadow } from "..";
 import { Color, type Guesses } from "../../../utils/guesses";
 import { Box } from "../../Box";
 import { Title } from "../../Title";
@@ -21,19 +22,23 @@ export function LingoGuessView(props: {
         <tbody>
           {[...Array(props.guesses.chars.length).keys()].map((i) => (
             <tr key={i}>
-              {[...Array(props.guesses.chars.length).keys()].map((j) => (
+              {[...Array(props.guesses.chars[0].length).keys()].map((j) => (
                 <td key={j}>
                   <div
-                    style={{
-                      boxShadow: "inset 0px 0px 16px rgba(0,0,0,.4)",
-                    }}
+                    style={{ boxShadow: innerShadow }}
                     className="h-24 w-24 rounded m-1 text-donkerrood text-6xl bg-wit"
                   >
                     {props.guesses.colors[i][j] === Color.CorrectLocation && (
-                      <div className="h-24 w-24 absolute rounded bg-oranje" />
+                      <div
+                        style={{ boxShadow: innerShadow }}
+                        className="h-24 w-24 absolute rounded bg-oranje"
+                      />
                     )}
                     {props.guesses.colors[i][j] === Color.IncorrectLocation && (
-                      <div className="h-24 w-24 absolute rounded-full bg-geel" />
+                      <div
+                        style={{ boxShadow: innerShadow }}
+                        className="h-24 w-24 absolute rounded-full bg-geel"
+                      />
                     )}
                     <div className="h-24 w-24 absolute flex justify-center items-center">
                       {props.guesses.currentRow === i &&

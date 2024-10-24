@@ -7,4 +7,3 @@
     - Nieuwe rij pling
     - Bonusletter pling
     - Groene bal pling
-- Mooiere styling (minder plat)

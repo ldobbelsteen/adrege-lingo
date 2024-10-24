@@ -26,12 +26,12 @@ export function Button(props: {
         setPressed(false);
         setHover(false);
       }}
-      className={`rounded m-1 p-2 ${
+      className={`shadow rounded m-1 p-2 ${
         pressed || props.pressed
           ? "bg-donkerderderderrood"
           : hover
             ? "bg-donkerderderrood"
-            : "bg-donkerderrood"
+            : "bg-donkerderrood shadow-inner"
       }`}
     >
       {props.children}
