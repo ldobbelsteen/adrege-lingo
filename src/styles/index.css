@@ -8,7 +8,7 @@
     src: url("../assets/GoBoom.woff2") format("woff2");
   }
 
-  html {
-    font-family: "Go Boom!";
+  * {
+    font-family: "Go Boom!", sans-serif;
   }
 }

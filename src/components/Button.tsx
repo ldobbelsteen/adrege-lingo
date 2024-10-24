@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { ReactNode } from "react";
 
 export function Button(props: {
-  children: React.ReactNode;
+  children: ReactNode;
   onClick: () => void;
   pressed?: boolean;
 }) {
@@ -12,9 +13,15 @@ export function Button(props: {
     <button
       type="button"
       onClick={props.onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseDown={() => setPressed(true)}
-      onMouseUp={() => setPressed(false)}
+      onMouseEnter={() => {
+        setHover(true);
+      }}
+      onMouseDown={() => {
+        setPressed(true);
+      }}
+      onMouseUp={() => {
+        setPressed(false);
+      }}
       onMouseLeave={() => {
         setPressed(false);
         setHover(false);

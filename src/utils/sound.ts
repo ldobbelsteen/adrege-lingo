@@ -1,5 +1,3 @@
-import toast from "react-hot-toast";
-
 import guessCorrectUrl from "../assets/effects/guess_correct.ogg";
 import guessOutOfTriesUrl from "../assets/effects/guess_out_of_tries.ogg";
 import guessTimeoutUrl from "../assets/effects/guess_timeout.ogg";
@@ -21,7 +19,9 @@ class Sound {
         this.buffer = buffer;
         return;
       })
-      .catch(toast.error);
+      .catch((e: unknown) => {
+        console.error(e);
+      });
   }
 
   async play() {
@@ -33,7 +33,7 @@ class Sound {
         source.onended = resolve;
         source.start();
       } else {
-        reject();
+        reject(new Error("buffer not loaded (yet)"));
       }
     });
   }

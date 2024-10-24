@@ -1,6 +1,6 @@
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -8,8 +8,8 @@ import {
 import normalWords from "../assets/normale-woorden.json";
 import stukoWords from "../assets/stuko-woorden.json";
 import { Screen } from "../components/Lingo";
-import { Card } from "./card";
-import { Guesses } from "./guesses";
+import type { Card } from "./card";
+import type { Guesses } from "./guesses";
 import { sortedArray } from "./misc";
 
 declare global {
@@ -86,7 +86,7 @@ export function useShowWord() {
 }
 
 export function useStukoWords() {
-  const state: { [category: string]: string[] } = {};
+  const state: Record<string, string[]> = {};
   for (const [category, words] of Object.entries(stukoWords)) {
     state[category] = sortedArray(words);
   }
@@ -94,7 +94,7 @@ export function useStukoWords() {
 }
 
 export function useNormalWords() {
-  const state: { [category: string]: string[] } = {};
+  const state: Record<string, string[]> = {};
   for (const [category, words] of Object.entries(normalWords)) {
     state[category] = sortedArray(words);
   }
@@ -106,7 +106,9 @@ function useStoredState<T>(
   defaultValue: T,
 ): [T, Dispatch<SetStateAction<T>>] {
   const setStorage = useCallback(
-    (value: T) => localStorage.setItem(stateKey, JSON.stringify(value)),
+    (value: T) => {
+      localStorage.setItem(stateKey, JSON.stringify(value));
+    },
     [stateKey],
   );
 
@@ -159,7 +161,7 @@ function useStoredState<T>(
         return newValue;
       });
     },
-    [stateKey, setState, setStorage],
+    [stateKey, setStorage],
   );
 
   return [state, setStateWrapper];

@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { fillNestedArray, randomPosInt } from "./misc";
 import { guessCorrect, lingoBall } from "./sound";
 
@@ -52,19 +51,22 @@ export function newCard(
 export function toggleGrabbed(card: Card, i: number, j: number): Card {
   const isGrabbed = card.isGrabbed.map((row, rowIndex) =>
     row.map((el, colIndex) => {
-      if (i === rowIndex && j == colIndex) {
+      if (i === rowIndex && j === colIndex) {
         return !el;
-      } else {
-        return el;
       }
+      return el;
     }),
   );
   const result = { ...card, isGrabbed };
   if (!card.isGrabbed[i][j]) {
     if (hasLingo(result)) {
-      guessCorrect.play().catch(toast.error);
+      guessCorrect.play().catch((e: unknown) => {
+        console.error(e);
+      });
     } else {
-      lingoBall.play().catch(toast.error);
+      lingoBall.play().catch((e: unknown) => {
+        console.error(e);
+      });
     }
   }
   return updateFavorites(result);
@@ -128,9 +130,8 @@ function isOnDiagonal(
 ): boolean {
   if (rising) {
     return j === card.dimensions - 1 - i;
-  } else {
-    return i === j;
   }
+  return i === j;
 }
 
 function updateFavorites(card: Card): Card {

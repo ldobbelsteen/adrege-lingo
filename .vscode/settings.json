@@ -1,16 +1,22 @@
 {
   "editor.formatOnSave": true,
-  "eslint.format.enable": true,
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "css.validate": false
 }

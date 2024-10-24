@@ -1,5 +1,4 @@
-import React from "react";
-import { Card, toggleGrabbed } from "../../../utils/card";
+import { type Card, toggleGrabbed } from "../../../utils/card";
 import { Box } from "../../Box";
 import { Title } from "../../Title";
 
@@ -20,20 +19,21 @@ export function LingoCardView(props: {
       />
       <table>
         <tbody>
-          {[...Array<number>(props.card.dimensions)].map((_, i) => (
+          {[...Array(props.card.dimensions).keys()].map((i) => (
             <tr key={i}>
-              {[...Array<number>(props.card.dimensions)].map((_, j) => (
+              {[...Array(props.card.dimensions).keys()].map((j) => (
                 <td key={j}>
                   <button
                     type="button"
-                    onClick={() =>
-                      props.setCard &&
-                      props.setCard(toggleGrabbed(props.card, i, j))
-                    }
+                    onClick={() => {
+                      if (props.setCard !== undefined) {
+                        props.setCard(toggleGrabbed(props.card, i, j));
+                      }
+                    }}
                     style={{
                       boxShadow: "inset -25px -15px 40px rgba(0,0,0,.3)",
                     }}
-                    className={`block h-24 w-24 m-1 rounded-full flex justify-center items-center text-6xl ${
+                    className={`h-24 w-24 m-1 rounded-full flex justify-center items-center text-6xl ${
                       props.card.isGrabbed[i][j] ? "bg-geel" : "bg-wit"
                     } ${
                       props.card.isFavorite[i][j]

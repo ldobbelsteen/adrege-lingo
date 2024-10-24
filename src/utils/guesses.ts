@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { fillArray } from "./misc";
 import {
   letterCorrectLocation,
@@ -7,10 +7,10 @@ import {
 } from "./sound";
 
 export enum Color {
-  CorrectLocation,
-  IncorrectLocation,
-  Incorrect,
-  None,
+  CorrectLocation = 0,
+  IncorrectLocation = 1,
+  Incorrect = 2,
+  None = 3,
 }
 
 export interface Guesses {
@@ -64,16 +64,14 @@ export function submitInput(guesses: Guesses): Guesses {
       if (char !== ".") return char;
       if (guesses.currentInput[i] === guesses.targetChars[i]) {
         return guesses.targetChars[i];
-      } else {
-        return ".";
       }
+      return ".";
     }),
     chars: guesses.chars.map((row, rowIndex) => {
       if (rowIndex === guesses.currentRow) {
         return guesses.currentInput;
-      } else {
-        return row;
       }
+      return row;
     }),
     currentRow: guesses.currentRow + 1,
     currentInput: [],
@@ -112,23 +110,24 @@ export function addColor(guesses: Guesses, i: number, j: number): Guesses {
   }
 
   if (guesses.chars[i][j] === guesses.targetChars[j]) {
-    letterCorrectLocation.play().catch(toast.error);
+    letterCorrectLocation.play().catch((e: unknown) => {
+      console.error(e);
+    });
     return {
       ...guesses,
       colors: guesses.colors.map((row, rowIndex) =>
         row.map((el, colIndex) => {
           if (i === rowIndex && j === colIndex) {
             return Color.CorrectLocation;
-          } else {
-            return el;
           }
+          return el;
         }),
       ),
     };
   }
 
   // Count number of occurrences of letters in word.
-  const wordOccs: { [letter: string]: number } = {};
+  const wordOccs: Record<string, number> = {};
   for (const letter of guesses.targetChars) {
     if (wordOccs[letter]) {
       wordOccs[letter] += 1;
@@ -138,7 +137,7 @@ export function addColor(guesses: Guesses, i: number, j: number): Guesses {
   }
 
   // Count number of occurrences of correct (or already yellowed) letters in row.
-  const correctOccs: { [letter: string]: number } = {};
+  const correctOccs: Record<string, number> = {};
   for (let k = 0; k < guesses.targetChars.length; k++) {
     const letter = guesses.chars[i][k];
     if (
@@ -158,31 +157,33 @@ export function addColor(guesses: Guesses, i: number, j: number): Guesses {
     (!correctOccs[guesses.chars[i][j]] ||
       correctOccs[guesses.chars[i][j]] < wordOccs[guesses.chars[i][j]])
   ) {
-    letterIncorrectLocation.play().catch(toast.error);
+    letterIncorrectLocation.play().catch((e: unknown) => {
+      console.error(e);
+    });
     return {
       ...guesses,
       colors: guesses.colors.map((row, rowIndex) =>
         row.map((el, colIndex) => {
           if (i === rowIndex && j === colIndex) {
             return Color.IncorrectLocation;
-          } else {
-            return el;
           }
+          return el;
         }),
       ),
     };
   }
 
-  letterIncorrect.play().catch(toast.error);
+  letterIncorrect.play().catch((e: unknown) => {
+    console.error(e);
+  });
   return {
     ...guesses,
     colors: guesses.colors.map((row, rowIndex) =>
       row.map((el, colIndex) => {
         if (i === rowIndex && j === colIndex) {
           return Color.Incorrect;
-        } else {
-          return el;
         }
+        return el;
       }),
     ),
   };
@@ -195,9 +196,8 @@ export function prefillDiscovered(guesses: Guesses): Guesses {
       row.map((el, colIndex) => {
         if (rowIndex === guesses.currentRow) {
           return guesses.discoveredChars[colIndex];
-        } else {
-          return el;
         }
+        return el;
       }),
     ),
   };
@@ -208,10 +208,10 @@ export function isOutOfTries(guesses: Guesses): boolean {
 }
 
 export function isCorrect(guesses: Guesses): boolean {
-  for (let i = 0; i < guesses.chars.length; i++) {
+  for (const row of guesses.chars) {
     let rowIsFinished = true;
     for (let j = 0; j < guesses.targetChars.length; j++) {
-      if (guesses.targetChars[j] !== guesses.chars[i][j]) {
+      if (guesses.targetChars[j] !== row[j]) {
         rowIsFinished = false;
       }
     }
@@ -230,7 +230,7 @@ function wordToChars(word: string) {
     if (
       i < rawChars.length - 1 &&
       rawChars[i] === "I" &&
-      rawChars[i + 1] == "J"
+      rawChars[i + 1] === "J"
     ) {
       chars.push("IJ");
       i += 1;

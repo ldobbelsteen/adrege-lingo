@@ -1,15 +1,15 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   useFirstTeamCard,
-  useFirstTeamSelected,
   useFirstTeamGuessing,
   useFirstTeamPoints,
+  useFirstTeamSelected,
   useGuesses,
   useScreen,
   useSecondTeamCard,
   useSecondTeamPoints,
-  useTeamMode,
   useShowWord,
+  useTeamMode,
 } from "../../../utils/storage";
 import { Screen } from "../index";
 import { LingoCardView } from "./LingoCardView";
@@ -34,7 +34,7 @@ export const LingoView = () => {
 
   const card = firstTeamSelected ? firstTeamCard : secondTeamCard;
 
-  const component = useMemo((): React.JSX.Element => {
+  const component = useMemo((): JSX.Element => {
     switch (screen) {
       case Screen.Guessing: {
         if (guesses) {
@@ -67,13 +67,13 @@ export const LingoView = () => {
               secondTeamPoints={secondTeamPoints}
             />
           );
-        } else {
-          return (
-            <LingoPointView
-              points={firstTeamSelected ? firstTeamPoints : secondTeamPoints}
-            />
-          );
         }
+
+        return (
+          <LingoPointView
+            points={firstTeamSelected ? firstTeamPoints : secondTeamPoints}
+          />
+        );
       }
     }
     return <LingoStartView />;

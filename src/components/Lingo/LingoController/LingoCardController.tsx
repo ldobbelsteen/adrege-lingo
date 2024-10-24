@@ -1,5 +1,4 @@
-import React from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { newCard } from "../../../utils/card";
 import { lingoBall } from "../../../utils/sound";
 import {
@@ -64,7 +63,9 @@ export function LingoCardController() {
                   cardPrefilled,
                 ),
               );
-              lingoBall.play().catch(toast.error);
+              lingoBall.play().catch((e: unknown) => {
+                console.error(e);
+              });
               toast.success("Nieuwe kaart aangemaakt!");
             }}
           >

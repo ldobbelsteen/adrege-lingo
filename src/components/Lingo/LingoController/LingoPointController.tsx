@@ -1,5 +1,3 @@
-import React from "react";
-import toast from "react-hot-toast";
 import { letterCorrectLocation } from "../../../utils/sound";
 import {
   useFirstTeamGuessing,
@@ -69,12 +67,20 @@ function PointControlButtons(props: {
       <Button
         onClick={() => {
           props.setPoints(props.points + 1);
-          letterCorrectLocation.play().catch(toast.error);
+          letterCorrectLocation.play().catch((e: unknown) => {
+            console.error(e);
+          });
         }}
       >
         Voeg 1 punt toe
       </Button>
-      <Button onClick={() => props.setPoints(0)}>Reset punten</Button>
+      <Button
+        onClick={() => {
+          props.setPoints(0);
+        }}
+      >
+        Reset punten
+      </Button>
     </div>
   );
 }

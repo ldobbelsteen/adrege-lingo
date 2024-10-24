@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export function Music(props: { src: string; playing: boolean }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -21,5 +21,6 @@ export function Music(props: { src: string; playing: boolean }) {
     }
   }, [props.playing, play, pause]);
 
+  // biome-ignore lint/a11y/useMediaCaption: <explanation>
   return <audio loop ref={audioRef} src={props.src} />;
 }
