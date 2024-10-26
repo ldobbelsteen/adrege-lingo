@@ -26,9 +26,11 @@ export function LingoSettingsController() {
       <section>
         <div className="max-w-2xl">
           Welkom bij het controlepaneel! Hieronder open je het venster waar de
-          speler op meekijkt. De speler krijgt minder te zien dan hier in het
-          controlepaneel. Als je boven in het menu naar een ander onderdeel
-          wisselt, gaat het kijkvenster ook mee (mits er iets te zien valt).
+          speler op meekijkt (zet die bijvoorbeeld op een tweede scherm). De
+          speler krijgt minder te zien dan hier in het controlepaneel, zodat
+          deze de woorden niet kan zien. Als je boven in het menu naar een ander
+          onderdeel wisselt, gaat het kijkvenster ook mee (mits er wat te zien
+          valt). Onderaan zou je nog wat instellingen kunnen veranderen.
         </div>
         <WindowToggle url="/?isView" windowName="Kijkvenster" />
         <Button

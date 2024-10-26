@@ -31,6 +31,7 @@ export function LingoCardController() {
     <>
       {teamMode && (
         <div>
+          <span>Toon kaart van: </span>
           <Multiselect
             selected={firstTeamSelected}
             setSelected={setFirstTeamSelected}
