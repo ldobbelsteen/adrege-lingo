@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { type ReactElement, useMemo } from "react";
 import { ToastContainer } from "react-toastify";
 import { useScreen } from "../../../utils/storage";
 import { Multiselect } from "../../Multiselect";
@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 export const LingoController = () => {
   const [screen, setScreen] = useScreen();
 
-  const component = useMemo((): JSX.Element => {
+  const component = useMemo((): ReactElement => {
     switch (screen) {
       case Screen.Settings: {
         return <LingoSettingsController />;

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { type ReactElement, useMemo } from "react";
 import {
   useFirstTeamCard,
   useFirstTeamGuessing,
@@ -34,7 +34,7 @@ export const LingoView = () => {
 
   const card = firstTeamSelected ? firstTeamCard : secondTeamCard;
 
-  const component = useMemo((): JSX.Element => {
+  const component = useMemo((): ReactElement => {
     switch (screen) {
       case Screen.Guessing: {
         if (guesses) {
