@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import normalWords from "../assets/normale-woorden.json";
-import stukoWords from "../assets/stuko-woorden.json";
+import ownWords from "../assets/eigen-woorden.json";
 import { Screen } from "../components/Lingo";
 import type { Card } from "./card";
 import type { Guesses } from "./guesses";
@@ -85,12 +85,12 @@ export function useShowWord() {
   return useStoredState("showWord", false);
 }
 
-export function useStukoWords() {
+export function useOwnWords() {
   const state: Record<string, string[]> = {};
-  for (const [category, words] of Object.entries(stukoWords)) {
+  for (const [category, words] of Object.entries(ownWords)) {
     state[category] = sortedArray(words);
   }
-  return useStoredState("stukoWords", state);
+  return useStoredState("ownWords", state);
 }
 
 export function useNormalWords() {

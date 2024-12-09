@@ -27,7 +27,7 @@ import {
   useMaxGuesses,
   useNormalWords,
   useShowWord,
-  useStukoWords,
+  useOwnWords,
   useTeamMode,
 } from "../../../utils/storage";
 import { Box } from "../../Box";
@@ -48,7 +48,7 @@ export function LingoGuessController() {
   const [firstTeamGuessing, setFirstTeamGuessing] = useFirstTeamGuessing();
 
   const [normalWords, setNormalWords] = useNormalWords();
-  const [stukoWords, setStukoWords] = useStukoWords();
+  const [ownWords, setOwnWords] = useOwnWords();
 
   const startWord = useCallback(
     (word: string) => {
@@ -131,9 +131,9 @@ export function LingoGuessController() {
         </Box>
       </div>
       <Box>
-        <Title text="Stuko woorden" textSize="text-2xl" />
+        <Title text="Eigen woorden" textSize="text-2xl" />
         <div className="flex gap-4">
-          {Object.entries(stukoWords).map(
+          {Object.entries(ownWords).map(
             ([category, words]) =>
               words.length > 0 && (
                 <WordSelectColumn
@@ -141,8 +141,8 @@ export function LingoGuessController() {
                   title={category}
                   words={words}
                   selectWord={(w) => {
-                    setStukoWords({
-                      ...stukoWords,
+                    setOwnWords({
+                      ...ownWords,
                       [category]: words.filter((v) => v !== w),
                     });
                     startWord(w);
