@@ -26,8 +26,8 @@ import {
   useGuessingStatus,
   useMaxGuesses,
   useNormalWords,
-  useShowWord,
   useOwnWords,
+  useShowWord,
   useTeamMode,
 } from "../../../utils/storage";
 import { Box } from "../../Box";

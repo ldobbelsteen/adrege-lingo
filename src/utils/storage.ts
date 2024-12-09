@@ -5,8 +5,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import normalWords from "../assets/normale-woorden.json";
 import ownWords from "../assets/eigen-woorden.json";
+import normalWords from "../assets/normale-woorden.json";
 import { Screen } from "../components/Lingo";
 import type { Card } from "./card";
 import type { Guesses } from "./guesses";
