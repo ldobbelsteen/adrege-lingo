@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-donkerderderderrood: #520c0b;
+  --color-donkerderderrood: #690f0e;
+  --color-donkerderrood: #7d1110;
+  --color-donkerishrood: #911514;
+  --color-donkerrood: #a51918;
+  --color-rood: #ea0e0e;
+  --color-oranje: #f99225;
+  --color-geel: #ffd500;
+  --color-wit: #ffffff;
+  --color-zwart: #000000;
+}
 
 @layer base {
   @font-face {

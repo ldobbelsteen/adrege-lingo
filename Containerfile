@@ -1,4 +1,4 @@
-FROM docker.io/library/node:20-bookworm AS builder
+FROM docker.io/library/node:22-bookworm AS builder
 WORKDIR /build
 COPY package*.json ./
 RUN npm ci

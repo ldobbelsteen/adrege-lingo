@@ -14,7 +14,7 @@ export function TextInput(props: {
       onChange={(ev) => {
         props.setInput(ev.target.value);
       }}
-      className="shadow text-donkerderrood rounded p-2 m-2"
+      className="bg-wit shadow text-donkerderrood rounded p-2 m-2"
       style={{ boxShadow: innerShadow }}
     />
   );
